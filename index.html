@@ -58,6 +58,8 @@
 </head>
 <body class="h-full w-full flex flex-col">
 
+    <input type="file" id="hidden-file-input" accept="image/*" class="hidden">
+
     <div id="app" class="h-full w-full flex flex-col relative overflow-hidden">
         <!-- Auth / Login View -->
         <div id="auth-view" class="absolute inset-0 flex items-center justify-center bg-whatsapp-darker p-4 overflow-y-auto z-20">
@@ -66,7 +68,7 @@
                     <i class="fa-brands fa-whatsapp"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-whatsapp-text mb-1">CyberChat</h1>
-                <p class="text-whatsapp-subtext text-xs mb-6 text-center">Mensagens criptografadas com E2EE.</p>
+                <p class="text-whatsapp-subtext text-xs mb-6 text-center">Mensagens criptografadas com E2EE & Gemini 3.5 Flash Lite.</p>
                 
                 <div class="flex w-full bg-whatsapp-inputBg rounded-lg p-1 mb-6 border border-whatsapp-border">
                     <button id="auth-tab-login" type="button" class="flex-1 py-2 text-xs font-semibold rounded-md bg-whatsapp-green text-white transition">Entrar</button>
@@ -75,13 +77,13 @@
 
                 <form id="auth-form" class="w-full flex flex-col gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-whatsapp-subtext mb-1">Nome de Usuário (Conta)</label>
-                        <input type="text" id="username-input" required placeholder="Usuário" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
+                        <label class="block text-xs font-medium text-whatsapp-subtext mb-1">Nome de Usuário</label>
+                        <input type="text" id="username-input" required placeholder="Seu usuário" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
                         <span id="username-error" class="text-red-400 text-xs mt-1.5 hidden block"></span>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-whatsapp-subtext mb-1">Senha</label>
-                        <input type="password" id="password-input" required placeholder="Digite sua senha" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
+                        <input type="password" id="password-input" required placeholder="Sua senha" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
                     </div>
                     <button type="submit" id="auth-submit-btn" class="w-full bg-whatsapp-green hover:bg-emerald-600 text-white font-semibold py-2.5 rounded-lg transition duration-200 mt-2 shadow flex items-center justify-center gap-2">
                         <span id="auth-btn-text">Entrar na Conta</span>
@@ -92,26 +94,28 @@
 
         <!-- Main Dashboard View -->
         <div id="main-view" class="absolute inset-0 flex hidden z-10 overflow-hidden">
-            
             <!-- Sidebar -->
             <div id="sidebar" class="w-full md:w-[380px] lg:w-[420px] h-full bg-whatsapp-dark border-r border-whatsapp-border flex flex-col z-10 shrink-0">
                 <div class="bg-whatsapp-panel px-4 py-3 flex items-center justify-between border-b border-whatsapp-border">
-                    <div class="flex items-center gap-3 cursor-pointer group" id="profile-trigger" title="Mudar meu apelido e foto de perfil">
-                        <img id="my-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border" alt="Perfil">
-                        <div class="min-w-0">
-                            <h3 id="my-name-display" class="font-medium text-sm text-whatsapp-text truncate">Meu Nome</h3>
-                            <span class="text-xs text-whatsapp-subtext block truncate" id="my-phone-display">@online</span>
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img id="my-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border cursor-pointer hover:opacity-80 transition shrink-0" title="Clique para alterar a foto do seu perfil" alt="Perfil">
+                        <div class="min-w-0 cursor-pointer group flex-1" id="profile-name-trigger" title="Clique para alterar seu nome">
+                            <h3 id="my-name-display" class="font-medium text-sm text-whatsapp-text truncate group-hover:underline">Nome</h3>
+                            <span class="text-xs text-whatsapp-subtext block truncate" id="my-phone-display">@user</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 text-whatsapp-subtext text-lg">
+                        <button id="btn-settings" title="Configurar Gemini API" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
+                            <i class="fa-solid fa-gear text-whatsapp-green"></i>
+                        </button>
                         <button id="btn-add-contact" title="Adicionar Contato" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
-                            <i class="fa-solid fa-user-plus text-whatsapp-green"></i> <span class="hidden sm:inline">Contato</span>
+                            <i class="fa-solid fa-user-plus text-whatsapp-green"></i>
                         </button>
                         <button id="btn-create-group" title="Criar Grupo" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
-                            <i class="fa-solid fa-users text-whatsapp-green"></i> <span class="hidden sm:inline">Grupo</span>
+                            <i class="fa-solid fa-users text-whatsapp-green"></i>
                         </button>
-                        <button id="btn-logout" title="Sair da Conta" class="hover:text-red-400 transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border text-whatsapp-subtext">
-                            <i class="fa-solid fa-right-from-bracket text-red-400"></i>
+                        <button id="btn-logout" title="Sair" class="hover:text-red-400 transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border text-whatsapp-subtext">
+                            <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </div>
                 </div>
@@ -119,13 +123,13 @@
                 <div class="p-2 bg-whatsapp-dark border-b border-whatsapp-border flex items-center gap-2">
                     <div class="flex-1 bg-whatsapp-inputBg rounded-lg flex items-center px-3 py-1.5 gap-3 border border-whatsapp-border focus-within:border-whatsapp-green">
                         <i class="fa-solid fa-magnifying-glass text-whatsapp-subtext text-sm"></i>
-                        <input type="text" id="search-input" placeholder="Pesquisar ou começar uma nova conversa" class="w-full bg-transparent text-sm text-whatsapp-text focus:outline-none placeholder-whatsapp-subtext">
+                        <input type="text" id="search-input" placeholder="Pesquisar conversas" class="w-full bg-transparent text-sm text-whatsapp-text focus:outline-none placeholder-whatsapp-subtext">
                     </div>
                 </div>
 
                 <div class="flex border-b border-whatsapp-border bg-whatsapp-dark text-xs font-semibold text-whatsapp-subtext">
                     <button id="tab-chats" class="flex-1 py-3 border-b-2 border-whatsapp-green text-whatsapp-green text-center transition">CONVERSAS</button>
-                    <button id="tab-contacts" class="flex-1 py-3 text-center transition hover:text-whatsapp-text">CONTATOS SALVOS</button>
+                    <button id="tab-contacts" class="flex-1 py-3 text-center transition hover:text-whatsapp-text">CONTATOS</button>
                 </div>
 
                 <div id="sidebar-list" class="flex-1 overflow-y-auto divide-y divide-whatsapp-border/40"></div>
@@ -133,47 +137,35 @@
 
             <!-- Chat Main Area -->
             <div id="chat-area" class="flex-1 h-full bg-whatsapp-darker flex flex-col hidden md:flex min-w-0 absolute md:relative inset-0 z-20 md:z-auto">
-                <div id="no-chat-selected" class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-whatsapp-darker border-b-8 border-whatsapp-green relative">
+                <div id="no-chat-selected" class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-whatsapp-darker border-b-8 border-whatsapp-green">
                     <div class="w-48 h-48 opacity-40 mb-6 flex items-center justify-center text-7xl text-whatsapp-subtext">
                         <i class="fa-brands fa-whatsapp"></i>
                     </div>
                     <h2 class="text-2xl font-light text-whatsapp-text mb-2">CyberChat Web</h2>
-                    <p class="text-sm text-whatsapp-subtext max-w-md">Envie e receba mensagens com criptografia ponta a ponta (E2EE).</p>
+                    <p class="text-sm text-whatsapp-subtext max-w-md">Selecione uma conversa ou chame a inteligência artificial digitando <b class="text-whatsapp-green">@gemini [sua pergunta]</b> em qualquer chat.</p>
                 </div>
 
                 <div id="active-chat" class="flex-1 flex flex-col h-full hidden min-w-0">
-                    <!-- Chat Header -->
                     <div class="bg-whatsapp-panel px-4 py-3 flex items-center justify-between border-b border-whatsapp-border">
                         <div class="flex items-center gap-3 min-w-0">
                             <button id="btn-back-to-list" class="md:hidden text-whatsapp-subtext text-lg mr-1"><i class="fa-solid fa-arrow-left"></i></button>
-                            <div id="active-chat-header-trigger" class="flex items-center gap-3 cursor-pointer min-w-0 group" title="Clique para gerenciar ou ver detalhes">
-                                <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border shrink-0" alt="Avatar">
+                            <!-- Foto do Grupo clicável para alterar imagem -->
+                            <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border shrink-0 cursor-pointer hover:opacity-80 transition" title="Clique para alterar a foto do grupo" alt="Avatar">
+                            <!-- Nome do Grupo clicável para alterar apenas o nome -->
+                            <div id="active-chat-name-trigger" class="flex items-center gap-3 cursor-pointer min-w-0 group flex-1" title="Clique para alterar o nome">
                                 <div class="min-w-0">
-                                    <h3 id="active-chat-name" class="font-medium text-sm text-whatsapp-text truncate group-hover:underline">Nome do Contato</h3>
-                                    <span id="active-chat-status" class="text-xs text-whatsapp-subtext block truncate">Status</span>
+                                    <h3 id="active-chat-name" class="font-medium text-sm text-whatsapp-text truncate group-hover:underline">Nome</h3>
+                                    <span id="active-chat-status" class="text-xs text-whatsapp-subtext block truncate">Online</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Messages Box -->
                     <div id="messages-container" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2 bg-[radial-gradient(#202c33_1px,transparent_1px)] [background-size:16px_16px] bg-whatsapp-darker"></div>
 
-                    <!-- Reply Preview Box -->
-                    <div id="reply-preview-container" class="hidden bg-whatsapp-panel px-4 py-2 border-t border-whatsapp-border flex items-center justify-between text-xs">
-                        <div class="flex items-center gap-2 border-l-2 border-whatsapp-green pl-2 min-w-0">
-                            <div class="min-w-0">
-                                <span id="reply-preview-sender" class="font-semibold text-emerald-400 block truncate">Nome</span>
-                                <span id="reply-preview-text" class="text-whatsapp-subtext block truncate">Mensagem...</span>
-                            </div>
-                        </div>
-                        <button id="btn-cancel-reply" class="text-whatsapp-subtext hover:text-whatsapp-text p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
-                    </div>
-
                     <!-- Input Footer -->
-                    <div class="bg-whatsapp-panel px-4 py-3 flex items-center gap-3 border-t border-whatsapp-border relative">
-                        <input type="text" id="message-input" placeholder="Digite uma mensagem" class="flex-1 bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green">
-                        
+                    <div id="chat-input-footer" class="bg-whatsapp-panel px-4 py-3 flex items-center gap-3 border-t border-whatsapp-border relative">
+                        <input type="text" id="message-input" placeholder="Digite uma mensagem ou @gemini..." class="flex-1 bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green">
                         <button id="btn-send-message" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
@@ -182,10 +174,10 @@
             </div>
         </div>
 
-        <!-- Custom Modal Container -->
+        <!-- Custom Modal -->
         <div id="custom-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden p-4">
             <div id="modal-content" class="bg-whatsapp-dark border border-whatsapp-border w-full max-w-md rounded-xl p-6 shadow-2xl flex flex-col">
-                <h3 id="modal-title" class="text-lg font-bold text-whatsapp-text mb-4">Título do Modal</h3>
+                <h3 id="modal-title" class="text-lg font-bold text-whatsapp-text mb-4">Título</h3>
                 <div id="modal-body" class="mb-6 max-h-[60vh] overflow-y-auto"></div>
                 <div id="modal-footer" class="flex justify-end gap-3">
                     <button onclick="closeModal()" class="bg-whatsapp-inputBg hover:bg-whatsapp-border text-whatsapp-text px-4 py-2 rounded-lg text-sm transition">Cancelar</button>
@@ -200,8 +192,8 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = 'cyberchat-414be';
-        const firebaseConfig = {
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cyberchat-414be';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyBVPT5i8EBEYMR6Ig7hw_0fXXTQNlEJIlg",
             authDomain: "cyberchat-414be.firebaseapp.com",
             databaseURL: "https://cyberchat-414be-default-rtdb.firebaseio.com",
@@ -218,54 +210,23 @@
             db = getFirestore(firebaseApp);
             auth = getAuth(firebaseApp);
         } catch (e) {
-            console.error("Erro ao iniciar Firebase:", e);
+            console.error("Firebase Init Error:", e);
         }
 
         let authMode = 'login';
-        let currentUser = null; 
-        let currentChatId = null; 
-        let activeTab = 'chats'; 
+        let currentUser = null;
+        let currentChatId = null;
+        let activeTab = 'chats';
         let chatsData = [];
         let contactsData = [];
+        let blockedUsersData = [];
         let messagesData = [];
         let usersDirectory = [];
         let unsubscribeMessages = null;
-        let replyingToMessage = null;
-
-        function processImageFile(file, maxWidth = 300, maxHeight = 300) {
-            return new Promise((resolve, reject) => {
-                if (!file) return resolve(null);
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > height) {
-                            if (width > maxWidth) {
-                                height = Math.round((height * maxWidth) / width);
-                                width = maxWidth;
-                            }
-                        } else {
-                            if (height > maxHeight) {
-                                width = Math.round((width * maxHeight) / height);
-                                height = maxHeight;
-                            }
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.85));
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
+        
+        let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+        let geminiModel = 'gemini-3.5-flash-lite';
+        localStorage.setItem('gemini_model', 'gemini-3.5-flash-lite');
 
         async function ensureAuth() {
             if (!auth) return null;
@@ -274,69 +235,60 @@
                 const cred = await signInAnonymously(auth);
                 return cred.user;
             } catch (err) {
-                console.error("Erro na autenticação:", err);
+                console.error("Auth error:", err);
                 return null;
             }
         }
 
         function getChatDisplayName(chat) {
             if (chat.isGroup) return chat.name;
-            if (!chat.participants || chat.participants.length === 0) return 'Conversa';
+            if (!chat.participants) return 'Conversa';
             const myUser = (currentUser.usernameLower || currentUser.username || '').toLowerCase();
             const otherUsername = chat.participants.find(p => p.toLowerCase() !== myUser);
             if (!otherUsername) return currentUser.displayName || currentUser.username;
             const matchedUser = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === otherUsername.toLowerCase());
-            if (matchedUser && matchedUser.displayName) return matchedUser.displayName;
-            return otherUsername;
+            return matchedUser && matchedUser.displayName ? matchedUser.displayName : otherUsername;
         }
 
         function getChatAvatar(chat) {
-            if (chat.isGroup) return chat.avatar || `https://placehold.co/100x100/202c33/e9edef?text=${(chat.name || 'G').charAt(0).toUpperCase()}`;
+            if (chat.isGroup) return chat.avatar || `https://placehold.co/100x100/202c33/e9edef?text=${(chat.name || 'G').charAt(0)}`;
             const myUser = (currentUser.usernameLower || currentUser.username || '').toLowerCase();
             const otherUsername = chat.participants.find(p => p.toLowerCase() !== myUser) || currentUser.username;
             const matchedUser = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === otherUsername.toLowerCase());
             if (matchedUser && matchedUser.avatar) return matchedUser.avatar;
-            const matchedContact = contactsData.find(c => (c.name || '').toLowerCase() === otherUsername.toLowerCase());
-            if (matchedContact && matchedContact.avatar) return matchedContact.avatar;
             return `https://placehold.co/100x100/00a884/e9edef?text=${otherUsername.charAt(0).toUpperCase()}`;
         }
 
         function getSenderDisplayName(username) {
             if (!username) return 'Usuário';
+            if (username === 'gemini_bot') return '🤖 Gemini IA';
             if (username.toLowerCase() === currentUser.username.toLowerCase()) return currentUser.displayName || currentUser.username;
             const matchedUser = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === username.toLowerCase());
-            if (matchedUser && matchedUser.displayName) return matchedUser.displayName;
-            return username;
+            return matchedUser && matchedUser.displayName ? matchedUser.displayName : username;
+        }
+
+        function isUserBlocked(username) {
+            if (!username) return false;
+            return blockedUsersData.some(b => b.blockedUser.toLowerCase() === username.toLowerCase());
         }
 
         const USERS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'users');
         const CONTACTS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'contacts');
+        const BLOCKED_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'blocked');
         const CHATS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'chats');
         const MESSAGES_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'messages');
 
         window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const savedUser = localStorage.getItem('cyberchat_user');
-                if (savedUser) {
-                    currentUser = JSON.parse(savedUser);
-                    document.getElementById('auth-view').classList.add('hidden');
-                    document.getElementById('main-view').classList.remove('hidden');
-                    initDashboard();
-                } else {
-                    document.getElementById('auth-view').classList.remove('hidden');
-                }
-            } catch (e) {
-                console.error("Erro crítico ao carregar perfil salvo:", e);
-                localStorage.removeItem('cyberchat_user');
+            const savedUser = localStorage.getItem('cyberchat_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('auth-view').classList.add('hidden');
+                document.getElementById('main-view').classList.remove('hidden');
+                initDashboard();
+            } else {
                 document.getElementById('auth-view').classList.remove('hidden');
             }
-
-            try {
-                await ensureAuth();
-            } catch (err) {
-                console.error("Erro no Auth inicial:", err);
-            }
-            setupEventListeners();
+            await ensureAuth();
         });
 
         const tabAuthLogin = document.getElementById('auth-tab-login');
@@ -360,15 +312,14 @@
             usernameError.classList.add('hidden');
         });
 
-        const authForm = document.getElementById('auth-form');
-        authForm.addEventListener('submit', async (e) => {
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const usernameInput = document.getElementById('username-input').value.trim();
             const passwordInput = document.getElementById('password-input').value.trim();
             usernameError.classList.add('hidden');
 
             if (!/^[a-zA-Z0-9]+$/.test(usernameInput)) {
-                usernameError.textContent = 'Nome de usuário inválido! Sem espaços ou pontuação.';
+                usernameError.textContent = 'Apenas letras e números no usuário!';
                 usernameError.classList.remove('hidden');
                 return;
             }
@@ -379,62 +330,44 @@
                 const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', usernameLower);
                 const userDocSnap = await getDoc(userDocRef);
 
-                let isNewRegistration = false;
-
+                let isNew = false;
                 if (authMode === 'login') {
                     if (!userDocSnap.exists()) {
                         usernameError.textContent = 'Conta não encontrada!';
                         usernameError.classList.remove('hidden');
                         return;
                     }
-                    const userData = userDocSnap.data();
-                    if (userData.password && userData.password !== passwordInput) {
+                    const data = userDocSnap.data();
+                    if (data.password && data.password !== passwordInput) {
                         usernameError.textContent = 'Senha incorreta!';
                         usernameError.classList.remove('hidden');
                         return;
                     }
-                    currentUser = {
-                        uid: userData.uid || usernameLower,
-                        username: userData.username || usernameInput,
-                        usernameLower: usernameLower,
-                        displayName: userData.displayName || usernameInput,
-                        avatar: userData.avatar || `https://placehold.co/100x100/00a884/e9edef?text=${usernameInput.charAt(0).toUpperCase()}`
-                    };
+                    currentUser = { uid: data.uid || usernameLower, username: data.username || usernameInput, usernameLower, displayName: data.displayName || usernameInput, avatar: data.avatar };
                 } else {
                     if (userDocSnap.exists()) {
-                        usernameError.textContent = 'Este nome de usuário já está em uso!';
+                        usernameError.textContent = 'Usuário já existe!';
                         usernameError.classList.remove('hidden');
                         return;
                     }
-                    isNewRegistration = true;
+                    isNew = true;
                     currentUser = { 
-                        uid: firebaseAuthUser ? firebaseAuthUser.uid : 'usuario_' + usernameLower, 
+                        uid: firebaseAuthUser.uid, 
                         username: usernameInput, 
                         usernameLower, 
                         displayName: usernameInput, 
                         avatar: `https://placehold.co/100x100/00a884/e9edef?text=${usernameInput.charAt(0).toUpperCase()}` 
                     };
-
-                    await setDoc(userDocRef, {
-                        ...currentUser,
-                        password: passwordInput,
-                        createdAt: new Date().toISOString()
-                    });
+                    await setDoc(userDocRef, { ...currentUser, password: passwordInput, createdAt: new Date().toISOString() });
                 }
 
                 localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
                 document.getElementById('auth-view').classList.add('hidden');
                 document.getElementById('main-view').classList.remove('hidden');
                 initDashboard();
-
-                if (isNewRegistration) {
-                    setTimeout(() => {
-                        openMyProfileModal();
-                    }, 300);
-                }
+                if (isNew) setTimeout(openMyNameModal, 300);
             } catch (err) {
-                console.error("Auth error:", err);
-                usernameError.textContent = 'Erro ao conectar ao servidor.';
+                usernameError.textContent = 'Erro ao autenticar: ' + err.message;
                 usernameError.classList.remove('hidden');
             }
         });
@@ -447,8 +380,6 @@
         }
 
         async function loadDirectoryAndData() {
-            await ensureAuth();
-
             onSnapshot(USERS_PATH(), (snapshot) => {
                 usersDirectory = [];
                 snapshot.forEach(docSnap => usersDirectory.push({ id: docSnap.id, ...docSnap.data() }));
@@ -459,11 +390,28 @@
                 contactsData = [];
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    const owner = (data.ownerUsername || data.ownerUid || '').toLowerCase();
-                    const myUser = (currentUser.usernameLower || currentUser.username || '').toLowerCase();
-                    if (owner === myUser) contactsData.push({ id: docSnap.id, ...data });
+                    if ((data.ownerUsername || '').toLowerCase() === (currentUser.usernameLower || currentUser.username).toLowerCase()) {
+                        contactsData.push({ id: docSnap.id, ...data });
+                    }
                 });
                 if (activeTab === 'contacts') renderSidebarList();
+            });
+
+            onSnapshot(BLOCKED_PATH(), (snapshot) => {
+                blockedUsersData = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if ((data.ownerUsername || '').toLowerCase() === (currentUser.usernameLower || currentUser.username).toLowerCase()) {
+                        blockedUsersData.push({ id: docSnap.id, ...data });
+                    }
+                });
+                if (currentChatId) {
+                    const activeChat = chatsData.find(c => c.id === currentChatId);
+                    if (activeChat && !activeChat.isGroup) {
+                        const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                        updateChatInputState(otherUsername);
+                    }
+                }
             });
 
             onSnapshot(CHATS_PATH(), (snapshot) => {
@@ -477,8 +425,11 @@
                 });
                 if (activeTab === 'chats') renderSidebarList();
                 if (currentChatId) {
-                    const activeChatObj = chatsData.find(c => c.id === currentChatId);
-                    if (activeChatObj) updateChatHeaderInfo(activeChatObj);
+                    const activeChat = chatsData.find(c => c.id === currentChatId);
+                    if (activeChat) {
+                        document.getElementById('active-chat-name').textContent = getChatDisplayName(activeChat);
+                        document.getElementById('active-chat-avatar').src = getChatAvatar(activeChat);
+                    }
                 }
             });
         }
@@ -506,49 +457,42 @@
             const searchVal = document.getElementById('search-input').value.toLowerCase();
 
             if (activeTab === 'chats') {
-                const filteredChats = chatsData.filter(c => getChatDisplayName(c).toLowerCase().includes(searchVal));
-                if (filteredChats.length === 0) {
-                    sidebarList.innerHTML = `<div class="p-6 text-center text-whatsapp-subtext text-sm">Nenhuma conversa encontrada.</div>`;
+                const filtered = chatsData.filter(c => getChatDisplayName(c).toLowerCase().includes(searchVal));
+                if (filtered.length === 0) {
+                    sidebarList.innerHTML = `<div class="p-6 text-center text-whatsapp-subtext text-sm">Nenhuma conversa.</div>`;
                     return;
                 }
-                filteredChats.forEach(chat => {
-                    const displayName = getChatDisplayName(chat);
-                    const displayAvatar = getChatAvatar(chat);
+                filtered.forEach(chat => {
                     const item = document.createElement('div');
                     item.className = `flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-whatsapp-panel/60 transition ${currentChatId === chat.id ? 'bg-whatsapp-panel' : ''}`;
                     item.innerHTML = `
-                        <img src="${displayAvatar}" class="w-12 h-12 rounded-full object-cover border border-whatsapp-border shrink-0" alt="Chat">
+                        <img src="${getChatAvatar(chat)}" class="w-12 h-12 rounded-full object-cover border border-whatsapp-border shrink-0">
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-baseline">
-                                <h4 class="font-medium text-sm text-whatsapp-text truncate">${displayName}</h4>
+                                <h4 class="font-medium text-sm text-whatsapp-text truncate">${getChatDisplayName(chat)}</h4>
                                 <span class="text-[10px] text-whatsapp-subtext shrink-0 ml-1">${chat.lastTime || ''}</span>
                             </div>
-                            <p class="text-xs text-whatsapp-subtext truncate">${chat.lastMessage || 'CyberChat criptografado'}</p>
+                            <p class="text-xs text-whatsapp-subtext truncate mt-0.5">${chat.lastMessage || 'CyberChat E2EE'}</p>
                         </div>
                     `;
                     item.onclick = () => openChat(chat);
                     sidebarList.appendChild(item);
                 });
             } else {
-                const filteredContacts = contactsData.filter(c => c.name.toLowerCase().includes(searchVal));
-                if (filteredContacts.length === 0) {
-                    sidebarList.innerHTML = `<div class="p-6 text-center text-whatsapp-subtext text-sm">Nenhum contato salvo.</div>`;
+                const filtered = contactsData.filter(c => c.name.toLowerCase().includes(searchVal));
+                if (filtered.length === 0) {
+                    sidebarList.innerHTML = `<div class="p-6 text-center text-whatsapp-subtext text-sm">Nenhum contato.</div>`;
                     return;
                 }
-                filteredContacts.forEach(contact => {
-                    const matchedUser = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === contact.name.toLowerCase());
-                    const contactDisplay = matchedUser && matchedUser.displayName ? matchedUser.displayName : contact.name;
+                filtered.forEach(contact => {
                     const item = document.createElement('div');
                     item.className = `flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-whatsapp-panel/60 transition`;
                     item.innerHTML = `
-                        <img src="${getChatAvatar({ isGroup: false, participants: [currentUser.username, contact.name] })}" class="w-12 h-12 rounded-full object-cover border border-whatsapp-border shrink-0" alt="Contato">
+                        <img src="${getChatAvatar({ isGroup: false, participants: [currentUser.username, contact.name] })}" class="w-12 h-12 rounded-full object-cover border border-whatsapp-border shrink-0">
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-medium text-sm text-whatsapp-text truncate">${contactDisplay}</h4>
+                            <h4 class="font-medium text-sm text-whatsapp-text truncate">${contact.name}</h4>
                             <p class="text-xs text-whatsapp-subtext truncate">@${contact.name}</p>
                         </div>
-                        <button class="text-whatsapp-green hover:text-emerald-400 p-2 text-sm shrink-0" title="Iniciar Conversa">
-                            <i class="fa-solid fa-comment"></i>
-                        </button>
                     `;
                     item.onclick = () => startDirectChat(contact);
                     sidebarList.appendChild(item);
@@ -559,118 +503,88 @@
         document.getElementById('search-input').addEventListener('input', renderSidebarList);
 
         document.getElementById('btn-add-contact').addEventListener('click', () => {
-            showModalForm("Adicionar Novo Contato", [
-                { id: 'c-name', label: 'Nome de Usuário do Contato', placeholder: 'Usuário' }
-            ], async (values) => {
-                const name = values['c-name'].trim();
+            showModalForm("Adicionar Contato", [{ id: 'c-name', label: 'Nome de usuário', placeholder: 'usuario' }], async (vals) => {
+                const name = vals['c-name'].trim();
                 if (!name) return;
-
-                try {
-                    await ensureAuth();
-                    const matchedUser = usersDirectory.find(u => u.username && u.username.toLowerCase() === name.toLowerCase());
-                    const avatar = matchedUser && matchedUser.avatar ? matchedUser.avatar : `https://placehold.co/100x100/00a884/e9edef?text=${name.charAt(0).toUpperCase()}`;
-
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'contacts', `${currentUser.usernameLower}_${name.toLowerCase()}`), {
-                        ownerUid: currentUser.uid,
-                        ownerUsername: (currentUser.usernameLower || currentUser.username).toLowerCase(),
-                        name,
-                        avatar,
-                        createdAt: new Date().toISOString()
-                    });
-                    activeTab = 'contacts';
-                    tabContacts.click();
-                } catch (err) {
-                    console.error("Error adding contact:", err);
-                }
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'contacts', `${currentUser.usernameLower}_${name.toLowerCase()}`), {
+                    ownerUsername: (currentUser.usernameLower || currentUser.username).toLowerCase(),
+                    name,
+                    createdAt: new Date().toISOString()
+                });
+                activeTab = 'contacts';
+                tabContacts.click();
             });
         });
 
         async function startDirectChat(contact) {
-            await ensureAuth();
-            const myUsernameLower = (currentUser.usernameLower || currentUser.username).toLowerCase();
-            const contactUsernameLower = contact.name.toLowerCase();
-
-            let existingChat = chatsData.find(c => !c.isGroup && c.participants && c.participants.some(p => p.toLowerCase() === contactUsernameLower) && c.participants.some(p => p.toLowerCase() === myUsernameLower));
-            if (!existingChat) {
-                const chatId = 'chat_' + [myUsernameLower, contactUsernameLower].sort().join('_');
-                const newChat = {
-                    id: chatId,
-                    name: contact.name,
-                    avatar: contact.avatar,
-                    isGroup: false,
-                    participants: [currentUser.username, contact.name],
-                    lastMessage: 'Conversa iniciada',
-                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                };
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), newChat);
-                existingChat = newChat;
+            const myU = (currentUser.usernameLower || currentUser.username).toLowerCase();
+            const contactU = contact.name.toLowerCase();
+            let chat = chatsData.find(c => !c.isGroup && c.participants && c.participants.some(p => p.toLowerCase() === contactU));
+            if (!chat) {
+                const chatId = 'chat_' + [myU, contactU].sort().join('_');
+                chat = { id: chatId, name: contact.name, isGroup: false, participants: [currentUser.username, contact.name], lastMessage: 'Conversa iniciada', lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), chat);
             }
             activeTab = 'chats';
             tabChats.click();
-            openChat(existingChat);
+            openChat(chat);
         }
 
         document.getElementById('btn-create-group').addEventListener('click', () => {
-            showModalForm("Criar Novo Grupo", [
-                { id: 'g-name', label: 'Nome do Grupo', placeholder: 'Projeto Cyber' },
-                { id: 'g-members', label: 'Participantes (separados por vírgula)', placeholder: 'usuario1, usuario2' },
-                { id: 'g-avatar-file', label: 'Foto do Grupo', type: 'file' }
-            ], async (values) => {
-                const groupName = values['g-name'].trim();
-                const membersRaw = values['g-members'].trim();
-                const uploadedGroupPhoto = values['g-avatar-file'];
-                const avatar = uploadedGroupPhoto || `https://placehold.co/100x100/202c33/e9edef?text=${groupName.charAt(0).toUpperCase() || 'GRP'}`;
-
-                if (!groupName) {
-                    showCustomModal("Erro", "Preencha o nome do grupo.");
-                    return;
-                }
-
-                const participants = membersRaw ? membersRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
-                if (!participants.some(p => p.toLowerCase() === currentUser.username.toLowerCase())) {
-                    participants.push(currentUser.username);
-                }
-
-                const chatId = 'group_' + Math.random().toString(36).substring(2, 12);
-                const newGroup = {
-                    id: chatId,
-                    name: groupName,
-                    avatar,
-                    isGroup: true,
-                    participants,
-                    creator: currentUser.username, 
-                    lastMessage: 'Grupo criado',
-                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                };
-
-                try {
-                    await ensureAuth();
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), newGroup);
-                    activeTab = 'chats';
-                    tabChats.click();
-                    openChat(newGroup);
-                } catch (err) {
-                    console.error("Error creating group:", err);
-                }
+            if (contactsData.length === 0) {
+                showCustomModal("Aviso", "Adicione contatos antes de criar grupos.");
+                return;
+            }
+            let html = `<div><label class="block text-xs text-whatsapp-subtext mb-1">Nome do Grupo</label><input type="text" id="g-name" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-3 py-2 text-sm text-whatsapp-text mb-3"><label class="block text-xs text-whatsapp-subtext mb-2">Participantes</label><div class="flex flex-col gap-1 max-h-40 overflow-y-auto">`;
+            contactsData.forEach(c => {
+                html += `<label class="flex items-center gap-2 text-sm text-whatsapp-text"><input type="checkbox" name="g-member" value="${c.name}"> ${c.name}</label>`;
             });
-        });
+            html += `</div></div>`;
+            document.getElementById('modal-title').textContent = "Criar Grupo";
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="confirm-group" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Criar</button>`;
+            document.getElementById('custom-modal').classList.remove('hidden');
 
-        function updateChatHeaderInfo(chatObj) {
-            const displayName = getChatDisplayName(chatObj);
-            const displayAvatar = getChatAvatar(chatObj);
-            document.getElementById('active-chat-name').textContent = displayName;
-            document.getElementById('active-chat-avatar').src = displayAvatar;
-            document.getElementById('active-chat-status').textContent = chatObj.isGroup ? `Criador: ${chatObj.creator || 'Desconhecido'} | Participantes: ${chatObj.participants.length}` : 'CyberChat criptografado E2EE';
-        }
+            document.getElementById('confirm-group').onclick = async () => {
+                const gName = document.getElementById('g-name').value.trim();
+                const checks = document.querySelectorAll('input[name="g-member"]:checked');
+                if (!gName) return;
+                const participants = [currentUser.username];
+                checks.forEach(ch => participants.push(ch.value));
+                const chatId = 'group_' + Math.random().toString(36).substring(2, 10);
+                const group = { 
+                    id: chatId, 
+                    name: gName, 
+                    isGroup: true, 
+                    participants, 
+                    creator: currentUser.username, 
+                    avatar: `https://placehold.co/100x100/202c33/e9edef?text=${gName.charAt(0)}`,
+                    lastMessage: 'Grupo criado', 
+                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                };
+                closeModal();
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), group);
+                activeTab = 'chats';
+                tabChats.click();
+                openChat(group);
+            };
+        });
 
         async function openChat(chat) {
             currentChatId = chat.id;
             document.getElementById('no-chat-selected').classList.add('hidden');
             document.getElementById('active-chat').classList.remove('hidden');
-            cancelReply();
-
-            const activeChatObj = chatsData.find(c => c.id === currentChatId) || chat;
-            updateChatHeaderInfo(activeChatObj);
+            document.getElementById('active-chat-name').textContent = getChatDisplayName(chat);
+            document.getElementById('active-chat-avatar').src = getChatAvatar(chat);
+            
+            if (chat.isGroup) {
+                document.getElementById('active-chat-status').textContent = `Grupo • ${chat.participants.length} membros (Criador: ${chat.creator || 'Desconhecido'})`;
+                updateChatInputState(null);
+            } else {
+                document.getElementById('active-chat-status').textContent = 'E2EE Criptografado';
+                const otherUsername = chat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                updateChatInputState(otherUsername);
+            }
 
             if (window.innerWidth < 768) {
                 document.getElementById('sidebar').classList.add('hidden');
@@ -678,8 +592,6 @@
             }
 
             if (unsubscribeMessages) unsubscribeMessages();
-
-            await ensureAuth();
             unsubscribeMessages = onSnapshot(MESSAGES_PATH(), (snapshot) => {
                 messagesData = [];
                 snapshot.forEach(docSnap => {
@@ -691,34 +603,140 @@
             });
         }
 
-        document.getElementById('active-chat-header-trigger').addEventListener('click', () => {
-            const activeChatObj = chatsData.find(c => c.id === currentChatId);
-            if (!activeChatObj) return;
+        function updateChatInputState(otherUsername) {
+            const footer = document.getElementById('chat-input-footer');
+            if (otherUsername && isUserBlocked(otherUsername)) {
+                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Este contato está bloqueado. Você não pode enviar mensagens.</div>`;
+            } else {
+                footer.innerHTML = `
+                    <input type="text" id="message-input" placeholder="Digite uma mensagem ou @gemini..." class="flex-1 bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green">
+                    <button id="btn-send-message" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                `;
+                document.getElementById('btn-send-message').addEventListener('click', sendMessage);
+                document.getElementById('message-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+            }
+        }
 
-            if (activeChatObj.isGroup) {
-                showModalForm("Editar Grupo", [
-                    { id: 'g-name', label: 'Nome do Grupo', placeholder: activeChatObj.name },
-                    { id: 'g-avatar-file', label: 'Nova Foto do Grupo', type: 'file' }
-                ], async (values) => {
-                    const newName = values['g-name'].trim() || activeChatObj.name;
-                    const newAvatar = values['g-avatar-file'] || activeChatObj.avatar;
+        // Clicar no NOME DO GRUPO (Altera apenas o nome se for o criador, ou abre opções de bloqueio se for chat privado)
+        document.getElementById('active-chat-name-trigger').addEventListener('click', () => {
+            const chat = chatsData.find(c => c.id === currentChatId);
+            if (!chat) return;
 
-                    try {
-                        await ensureAuth();
-                        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', activeChatObj.id), {
-                            name: newName,
-                            avatar: newAvatar
-                        });
-                        showCustomModal("Sucesso", "Informações do grupo atualizadas!");
-                    } catch (err) {
-                        console.error("Erro ao atualizar grupo:", err);
-                    }
+            if (chat.isGroup) {
+                const isCreator = (chat.creator || '').toLowerCase() === currentUser.username.toLowerCase();
+                if (!isCreator) {
+                    showCustomModal("Informações do Grupo", `Nome: ${chat.name}\nCriador: ${chat.creator}\nApenas o criador pode alterar o nome.`);
+                    return;
+                }
+
+                showModalForm("Alterar Nome do Grupo", [
+                    { id: 'g-name', label: 'Novo Nome do Grupo', value: chat.name }
+                ], async (vals) => {
+                    const newName = vals['g-name'].trim();
+                    if (!newName) return;
+
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), {
+                        name: newName
+                    });
+                    showCustomModal("Sucesso", "Nome do grupo atualizado!");
                 });
             } else {
-                const displayName = getChatDisplayName(activeChatObj);
-                showCustomModal("Detalhes da Conversa", `Conversa direta com <b>${displayName}</b>.<br><br>As mensagens são protegidas por criptografia ponta a ponta.`);
+                const otherUsername = chat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                if (!otherUsername) return;
+                const blocked = isUserBlocked(otherUsername);
+                
+                showCustomModalWithOptions(otherUsername, blocked ? "Desbloquear Contato" : "Bloquear Contato", blocked ? "Este contato está bloqueado." : "Deseja bloquear este contato?", async () => {
+                    if (blocked) {
+                        const bItem = blockedUsersData.find(b => b.blockedUser.toLowerCase() === otherUsername.toLowerCase());
+                        if (bItem) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', bItem.id));
+                    } else {
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', `${currentUser.usernameLower}_${otherUsername.toLowerCase()}`), {
+                            ownerUsername: (currentUser.usernameLower || currentUser.username).toLowerCase(),
+                            blockedUser: otherUsername,
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                    closeModal();
+                    openChat(chat);
+                });
             }
         });
+
+        // Clicar na FOTO DO GRUPO (Altera a foto do grupo escolhendo do armazenamento)
+        document.getElementById('active-chat-avatar').addEventListener('click', () => {
+            const chat = chatsData.find(c => c.id === currentChatId);
+            if (!chat || !chat.isGroup) {
+                showCustomModal("Aviso", "A foto só pode ser alterada diretamente em grupos por você.");
+                return;
+            }
+            const isCreator = (chat.creator || '').toLowerCase() === currentUser.username.toLowerCase();
+            if (!isCreator) {
+                showCustomModal("Aviso", "Apenas o criador pode alterar a foto do grupo.");
+                return;
+            }
+
+            openImageStoragePicker(async (base64Image) => {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), {
+                    avatar: base64Image
+                });
+                showCustomModal("Sucesso", "Foto do grupo atualizada com sucesso!");
+            });
+        });
+
+        // Clicar na FOTO DO PERFIL (Altera a foto do seu próprio perfil escolhendo do armazenamento)
+        document.getElementById('my-avatar').addEventListener('click', () => {
+            openImageStoragePicker(async (base64Image) => {
+                currentUser.avatar = base64Image;
+                localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
+                
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower);
+                await updateDoc(userDocRef, { avatar: base64Image });
+
+                initDashboard();
+                showCustomModal("Sucesso", "Foto de perfil atualizada com sucesso!");
+            });
+        });
+
+        // Seletor de Arquivos do Armazenamento Local
+        function openImageStoragePicker(onImageReady) {
+            const fileInput = document.getElementById('hidden-file-input');
+            fileInput.value = ''; // reseta
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    showCustomModal("Erro", "Por favor, selecione um arquivo de imagem válido.");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (uploadEvent) => {
+                    onImageReady(uploadEvent.target.result);
+                };
+                reader.readAsDataURL(file);
+            };
+            fileInput.click();
+        }
+
+        // Clicar no NOME DO PERFIL (Altera apenas o seu nome)
+        function openMyNameModal() {
+            showModalForm("Alterar Seu Nome", [
+                { id: 'nick', label: 'Seu Nome Exibido', value: currentUser.displayName }
+            ], async (vals) => {
+                const newNick = vals['nick'].trim() || currentUser.username;
+                currentUser.displayName = newNick;
+                
+                localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
+                
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower);
+                await updateDoc(userDocRef, { displayName: newNick });
+
+                initDashboard();
+                showCustomModal("Sucesso", "Nome atualizado com sucesso!");
+            });
+        }
+        document.getElementById('profile-name-trigger').addEventListener('click', openMyNameModal);
 
         document.getElementById('btn-back-to-list').addEventListener('click', () => {
             document.getElementById('sidebar').classList.remove('hidden');
@@ -729,324 +747,220 @@
         const messagesContainer = document.getElementById('messages-container');
         function renderMessages() {
             messagesContainer.innerHTML = '';
-            if (messagesData.length === 0) {
-                messagesContainer.innerHTML = `
-                    <div class="my-auto mx-auto bg-whatsapp-panel/85 border border-whatsapp-border/60 rounded-lg p-4 max-w-sm text-center text-xs text-whatsapp-subtext shadow">
-                        <i class="fa-solid fa-lock mb-2 text-whatsapp-green text-base"></i>
-                        <p>As mensagens são protegidas com criptografia de ponta a ponta.</p>
-                    </div>
-                `;
-                return;
-            }
-
             messagesData.forEach(msg => {
                 const isMe = msg.sender.toLowerCase() === currentUser.username.toLowerCase();
-                const senderName = getSenderDisplayName(msg.sender);
-                const bubble = document.createElement('div');
-                bubble.className = `flex flex-col max-w-[75%] md:max-w-[65%] mb-2 ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'} relative group transition-transform duration-150`;
+                const div = document.createElement('div');
+                div.className = `flex flex-col max-w-[75%] mb-2 ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'} relative group`;
                 
-                const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const editedBadge = msg.edited ? `<span class="text-[9px] text-whatsapp-subtext italic mr-1">(editada)</span>` : '';
-                const seenBadge = isMe ? `<span class="text-[10px] ml-1 text-whatsapp-green"><i class="fa-solid fa-check-double"></i></span>` : '';
-
-                let replyHtml = '';
-                if (msg.replyTo) {
-                    replyHtml = `
-                        <div class="bg-black/20 border-l-2 border-whatsapp-green px-2 py-1 mb-1 rounded text-xs select-none">
-                            <span class="font-semibold text-emerald-400 block">${escapeHtml(msg.replyTo.senderName)}</span>
-                            <span class="text-whatsapp-subtext truncate block">${escapeHtml(msg.replyTo.text)}</span>
-                        </div>
-                    `;
-                }
-
-                let actionsMenuBtn = `
-                    <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition bg-whatsapp-panel/90 rounded px-1 flex gap-1 z-10 shadow">
-                        <button onclick="forwardMessage('${encodeURIComponent(msg.text)}')" title="Encaminhar Mensagem" class="text-whatsapp-subtext hover:text-whatsapp-green p-1 text-xs"><i class="fa-solid fa-share"></i></button>
-                        ${isMe ? `
-                            <button onclick="editMessage('${msg.id}', '${encodeURIComponent(msg.text)}')" title="Editar Mensagem" class="text-whatsapp-subtext hover:text-whatsapp-green p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteMessage('${msg.id}')" title="Apagar Mensagem" class="text-whatsapp-subtext hover:text-red-400 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        ` : ''}
-                    </div>
-                `;
-
-                bubble.innerHTML = `
-                    ${actionsMenuBtn}
-                    <div class="rounded-lg px-3 py-2 text-sm shadow ${isMe ? 'bg-whatsapp-bubbleOut text-whatsapp-text rounded-tr-none' : 'bg-whatsapp-bubbleIn text-whatsapp-text rounded-tl-none'} relative cursor-pointer" data-msg-id="${msg.id}">
-                        ${!isMe && !msg.replyTo ? `<span class="block text-[11px] font-semibold text-emerald-400 mb-0.5">${senderName}</span>` : ''}
-                        ${replyHtml}
-                        <div class="break-words pr-12">${escapeHtml(msg.text)}</div>
-                        <div class="flex items-center justify-end gap-1 mt-1 text-[10px] text-whatsapp-subtext select-none">
-                            ${editedBadge}
-                            <span>${timeStr}</span>
-                            ${seenBadge}
+                div.innerHTML = `
+                    <div class="rounded-lg px-3 py-2 text-sm shadow ${isMe ? 'bg-whatsapp-bubbleOut text-whatsapp-text rounded-tr-none' : 'bg-whatsapp-bubbleIn text-whatsapp-text rounded-tl-none'} relative">
+                        ${!isMe ? `<span class="block text-[11px] font-semibold text-emerald-400 mb-0.5">${getSenderDisplayName(msg.sender)}</span>` : ''}
+                        ${msg.forwarded ? '<span class="block text-[10px] text-whatsapp-subtext italic mb-0.5"><i class="fa-solid fa-share mr-1"></i>Encaminhada</span>' : ''}
+                        <div class="break-words message-text-content">${escapeHtml(msg.text)}</div>
+                        <div class="flex items-center justify-end gap-2 mt-1 text-[10px] text-whatsapp-subtext">
+                            ${msg.edited ? '<span class="italic">(editado)</span>' : ''}
+                            <span>${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            <div class="inline-flex gap-1.5 ml-1 opacity-80 hover:opacity-100">
+                                <button title="Encaminhar" onclick="window.forwardMessage('${encodeURIComponent(msg.text)}')" class="hover:text-whatsapp-green"><i class="fa-solid fa-share text-[10px]"></i></button>
+                                ${isMe && !msg.forwarded ? `<button title="Editar" onclick="window.editMessage('${msg.id}', '${encodeURIComponent(msg.text)}')" class="hover:text-whatsapp-green"><i class="fa-solid fa-pen text-[10px]"></i></button>` : ''}
+                                ${isMe ? `<button title="Apagar para todos" onclick="window.deleteMessage('${msg.id}')" class="hover:text-red-400"><i class="fa-solid fa-trash text-[10px]"></i></button>` : ''}
+                            </div>
                         </div>
                     </div>
                 `;
-
-                // Gestos de arrastar para o lado (Responder)
-                let startX = 0;
-                const bubbleEl = bubble.querySelector('div[data-msg-id]');
-                
-                bubbleEl.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                }, { passive: true });
-
-                bubbleEl.addEventListener('touchmove', (e) => {
-                    const diffX = e.touches[0].clientX - startX;
-                    if (diffX > 15 && diffX < 80) {
-                        bubble.style.transform = `translateX(${diffX}px)`;
-                    }
-                }, { passive: true });
-
-                bubbleEl.addEventListener('touchend', (e) => {
-                    const diffX = e.changedTouches[0].clientX - startX;
-                    bubble.style.transform = 'translateX(0px)';
-                    if (diffX > 40) {
-                        triggerReply(msg);
-                    }
-                });
-
-                // Suporte para clique duplo ou arrastar com mouse no PC
-                bubbleEl.addEventListener('dblclick', () => {
-                    triggerReply(msg);
-                });
-
-                messagesContainer.appendChild(bubble);
+                messagesContainer.appendChild(div);
             });
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        function triggerReply(msg) {
-            replyingToMessage = {
-                id: msg.id,
-                senderName: getSenderDisplayName(msg.sender),
-                text: msg.text
-            };
-            document.getElementById('reply-preview-sender').textContent = replyingToMessage.senderName;
-            document.getElementById('reply-preview-text').textContent = replyingToMessage.text;
-            document.getElementById('reply-preview-container').classList.remove('hidden');
-            document.getElementById('message-input').focus();
-        }
-
-        window.cancelReply = function() {
-            replyingToMessage = null;
-            document.getElementById('reply-preview-container').classList.add('hidden');
-        }
-        document.getElementById('btn-cancel-reply').addEventListener('click', cancelReply);
-
-        window.forwardMessage = function(encodedText) {
+        window.forwardMessage = (encodedText) => {
             const textToForward = decodeURIComponent(encodedText);
             if (chatsData.length === 0) {
-                showCustomModal("Encaminhar", "Você não possui outras conversas ativas.");
+                showCustomModal("Aviso", "Nenhuma conversa disponível para encaminhar.");
                 return;
             }
-
-            let chatsHtml = `<div class="flex flex-col gap-2">`;
+            let html = `<div class="flex flex-col gap-1 max-h-60 overflow-y-auto">`;
             chatsData.forEach(c => {
-                if (c.id === currentChatId) return;
-                chatsHtml += `
-                    <button onclick="executeForward('${c.id}', '${encodeURIComponent(textToForward)}')" class="flex items-center gap-3 p-2 bg-whatsapp-inputBg hover:bg-whatsapp-border rounded-lg text-left transition">
-                        <img src="${getChatAvatar(c)}" class="w-10 h-10 rounded-full object-cover">
-                        <span class="text-sm font-medium text-whatsapp-text truncate">${getChatDisplayName(c)}</span>
-                    </button>
-                `;
+                html += `<div onclick="window.confirmForward('${c.id}', '${encodeURIComponent(textToForward)}')" class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-whatsapp-panel transition"><img src="${getChatAvatar(c)}" class="w-10 h-10 rounded-full object-cover"><span class="text-sm text-whatsapp-text font-medium">${getChatDisplayName(c)}</span></div>`;
             });
-            chatsHtml += `</div>`;
-            showCustomModal("Encaminhar Mensagem Para...", chatsHtml);
+            html += `</div>`;
+            document.getElementById('modal-title').textContent = "Encaminhar para...";
+            document.getElementById('modal-body').innerHTML = html;
             document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button>`;
-        }
+            document.getElementById('custom-modal').classList.remove('hidden');
+        };
 
-        window.executeForward = async function(targetChatId, encodedText) {
+        window.confirmForward = async (targetChatId, encodedText) => {
             const text = decodeURIComponent(encodedText);
-            closeModal();
             const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
-            const newMsg = {
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
                 id: msgId,
                 chatId: targetChatId,
                 sender: currentUser.username,
-                text: `↪️ Encaminhado: ${text}`,
+                text,
+                forwarded: true,
                 timestamp: new Date().toISOString()
-            };
-            try {
-                await ensureAuth();
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), newMsg);
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', targetChatId), {
-                    lastMessage: `${currentUser.displayName || currentUser.username}: ↪️ Encaminhado`,
-                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-                showCustomModal("Sucesso", "Mensagem encaminhada com sucesso!");
-            } catch (err) {
-                console.error("Erro ao encaminhar mensagem:", err);
-            }
-        }
-
-        window.deleteMessage = async function(msgId) {
-            if (!confirm("Deseja realmente apagar esta mensagem?")) return;
-            try {
-                await ensureAuth();
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
-            } catch (err) {
-                console.error("Erro ao apagar mensagem:", err);
-            }
+            });
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', targetChatId), {
+                lastMessage: `${currentUser.displayName}: ${text}`,
+                lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+            closeModal();
+            showCustomModal("Sucesso", "Mensagem encaminhada com sucesso!");
         };
 
-        window.editMessage = function(msgId, encodedText) {
+        window.editMessage = (msgId, encodedText) => {
             const currentText = decodeURIComponent(encodedText);
             showModalForm("Editar Mensagem", [
-                { id: 'new-text', label: 'Novo texto da mensagem', placeholder: currentText }
-            ], async (values) => {
-                const updatedText = values['new-text'].trim();
+                { id: 'new-text', label: 'Nova mensagem', value: currentText }
+            ], async (vals) => {
+                const updatedText = vals['new-text'].trim();
                 if (!updatedText) return;
-                try {
-                    await ensureAuth();
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
-                        text: updatedText,
-                        edited: true
-                    });
-                } catch (err) {
-                    console.error("Erro ao editar mensagem:", err);
-                }
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
+                    text: updatedText,
+                    edited: true
+                });
             });
         };
 
-        function escapeHtml(text) {
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        window.deleteMessage = async (msgId) => {
+            showModalConfirmAction("Apagar Mensagem", "Tem certeza que deseja apagar esta mensagem para todos? Ela será removida do servidor do Firebase.", async () => {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
+                closeModal();
+            });
+        };
+
+        async function fetchGeminiResponse(prompt, chatId) {
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error?.message || "Erro na API Gemini.");
+
+                const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem resposta da IA.";
+                const botMsgId = 'msg_' + Math.random().toString(36).substring(2, 12);
+                
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', botMsgId), {
+                    id: botMsgId,
+                    chatId,
+                    sender: 'gemini_bot',
+                    text: replyText,
+                    timestamp: new Date().toISOString()
+                });
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), {
+                    lastMessage: `Gemini: ${replyText.substring(0, 30)}...`,
+                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+            } catch (err) {
+                showCustomModal("Erro no Gemini", err.message);
+            }
         }
 
-        const messageInput = document.getElementById('message-input');
-        const btnSendMessage = document.getElementById('btn-send-message');
-
-        btnSendMessage.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
         async function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text) return;
+            const input = document.getElementById('message-input');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text || !currentChatId) return;
 
-            messageInput.value = '';
-            const targetChatId = currentChatId;
+            const activeChat = chatsData.find(c => c.id === currentChatId);
+            if (!activeChat.isGroup) {
+                const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                if (otherUsername && isUserBlocked(otherUsername)) return;
+            }
+
+            input.value = '';
             const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
-            
-            const newMsg = {
+            const msg = {
                 id: msgId,
-                chatId: targetChatId,
+                chatId: currentChatId,
                 sender: currentUser.username,
                 text,
                 timestamp: new Date().toISOString()
             };
 
-            if (replyingToMessage) {
-                newMsg.replyTo = {
-                    id: replyingToMessage.id,
-                    senderName: replyingToMessage.senderName,
-                    text: replyingToMessage.text
-                };
-                cancelReply();
-            }
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), msg);
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                lastMessage: `${currentUser.displayName}: ${text}`,
+                lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
 
-            try {
-                await ensureAuth();
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), newMsg);
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', targetChatId), {
-                    lastMessage: `${currentUser.displayName || currentUser.username}: ${text}`,
-                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-            } catch (err) {
-                console.error("Error sending message:", err);
+            if (text.toLowerCase().startsWith('@gemini ')) {
+                if (!geminiApiKey) {
+                    showCustomModal("API Key Ausente", "Configure sua chave do Gemini clicando na engrenagem no topo.");
+                    return;
+                }
+                const prompt = text.substring(8).trim();
+                if (prompt) fetchGeminiResponse(prompt, currentChatId);
             }
         }
 
-        function showCustomModal(title, bodyText) {
+        function escapeHtml(str) {
+            return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+        }
+
+        function showCustomModal(title, text) {
             document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-body').innerHTML = `<p class="text-sm text-whatsapp-subtext">${bodyText}</p>`;
-            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm font-medium">OK</button>`;
+            document.getElementById('modal-body').innerHTML = `<p class="text-sm text-whatsapp-subtext whitespace-pre-line">${text}</p>`;
+            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">OK</button>`;
             document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function showCustomModalWithOptions(title, buttonText, text, onAction) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = `<p class="text-sm text-whatsapp-subtext">${text}</p>`;
+            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="modal-action-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">${buttonText}</button>`;
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('modal-action-btn').onclick = onAction;
+        }
+
+        function showModalConfirmAction(title, text, onConfirm) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = `<p class="text-sm text-whatsapp-subtext">${text}</p>`;
+            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="modal-action-confirm" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Apagar</button>`;
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('modal-action-confirm').onclick = onConfirm;
         }
 
         function showModalForm(title, fields, onSubmit) {
             document.getElementById('modal-title').textContent = title;
-            let bodyHtml = `<div class="flex flex-col gap-3">`;
+            let html = `<div class="flex flex-col gap-3">`;
             fields.forEach(f => {
-                if (f.type === 'file') {
-                    bodyHtml += `<div><label class="block text-xs text-whatsapp-subtext mb-1">${f.label}</label><input type="file" id="modal-field-${f.id}" accept="image/*" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-3 py-2 text-xs text-whatsapp-text cursor-pointer"></div>`;
-                } else {
-                    bodyHtml += `<div><label class="block text-xs text-whatsapp-subtext mb-1">${f.label}</label><input type="text" id="modal-field-${f.id}" placeholder="${f.placeholder || ''}" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-3 py-2 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green"></div>`;
-                }
+                html += `<div><label class="block text-xs text-whatsapp-subtext mb-1">${f.label}</label><input type="${f.type || 'text'}" id="modal-${f.id}" value="${f.value || ''}" placeholder="${f.placeholder || ''}" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-3 py-2 text-sm text-whatsapp-text"></div>`;
             });
-            bodyHtml += `</div>`;
-            document.getElementById('modal-body').innerHTML = bodyHtml;
-            document.getElementById('modal-footer').innerHTML = `
-                <button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button>
-                <button id="modal-form-submit" class="bg-whatsapp-green hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Confirmar</button>
-            `;
+            html += `</div>`;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="modal-submit" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Salvar</button>`;
             document.getElementById('custom-modal').classList.remove('hidden');
 
-            document.getElementById('modal-form-submit').onclick = async () => {
-                const values = {};
-                for (const f of fields) {
-                    const el = document.getElementById(`modal-field-${f.id}`);
-                    if (f.type === 'file') {
-                        values[f.id] = el.files && el.files[0] ? await processImageFile(el.files[0]) : null;
-                    } else {
-                        values[f.id] = el.value;
-                    }
-                }
+            document.getElementById('modal-submit').onclick = () => {
+                const vals = {};
+                fields.forEach(f => vals[f.id] = document.getElementById(`modal-${f.id}`).value);
                 closeModal();
-                onSubmit(values);
+                onSubmit(vals);
             };
         }
 
-        window.closeModal = function() {
-            document.getElementById('custom-modal').classList.add('hidden');
-        };
+        window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        function openMyProfileModal() {
-            showModalForm("Meu Perfil", [
-                { id: 'nickname', label: 'Meu Apelido', placeholder: currentUser.displayName || currentUser.username },
-                { id: 'avatar-file', label: 'Nova Foto de Perfil', type: 'file' }
-            ], async (values) => {
-                const newNickname = values['nickname'].trim() || currentUser.username;
-                let newAvatar = values['avatar-file'] || currentUser.avatar;
-
-                currentUser.displayName = newNickname;
-                currentUser.avatar = newAvatar;
-
-                localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
-                
-                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower);
-                await setDoc(userDocRef, {
-                    displayName: currentUser.displayName,
-                    avatar: currentUser.avatar
-                }, { merge: true });
-                
-                initDashboard();
-                showCustomModal("Sucesso", "Perfil atualizado com sucesso!");
+        document.getElementById('btn-settings').addEventListener('click', () => {
+            showModalForm("Configurar Gemini API", [
+                { id: 'key', label: 'Chave API do Gemini', value: geminiApiKey, placeholder: 'AIzaSy...' }
+            ], (vals) => {
+                geminiApiKey = vals['key'].trim();
+                if (geminiApiKey) localStorage.setItem('gemini_api_key', geminiApiKey);
+                showCustomModal("Sucesso", "Chave API salva com sucesso! Modelo padrão ativo: gemini-3.5-flash-lite.");
             });
-        }
+        });
 
-        document.getElementById('profile-trigger').addEventListener('click', openMyProfileModal);
-
-        function setupEventListeners() {
-            const btnLogout = document.getElementById('btn-logout');
-            if (btnLogout) {
-                btnLogout.addEventListener('click', () => {
-                    localStorage.removeItem('cyberchat_user');
-                    currentUser = null;
-                    currentChatId = null;
-                    if (unsubscribeMessages) unsubscribeMessages();
-                    document.getElementById('main-view').classList.add('hidden');
-                    document.getElementById('auth-view').classList.remove('hidden');
-                    document.getElementById('username-input').value = '';
-                    document.getElementById('password-input').value = '';
-                });
-            }
-        }
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            localStorage.removeItem('cyberchat_user');
+            location.reload();
+        });
     </script>
 </body>
 </html>
