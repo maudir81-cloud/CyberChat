@@ -92,7 +92,6 @@
             </div>
         </div>
 
-        <!-- Main Dashboard View -->
         <div id="main-view" class="absolute inset-0 flex hidden z-10 overflow-hidden">
             <!-- Sidebar -->
             <div id="sidebar" class="w-full md:w-[380px] lg:w-[420px] h-full bg-whatsapp-dark border-r border-whatsapp-border flex flex-col z-10 shrink-0">
@@ -189,7 +188,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'cyberchat-414be';
@@ -203,6 +202,7 @@
             appId: "1:865992019962:web:9fbafccbc9150e415d9e43",
             measurementId: "G-VSBDW0B7PF"
         };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
 
         let firebaseApp, db, auth;
         try {
@@ -232,11 +232,22 @@
             if (!auth) return null;
             if (auth.currentUser) return auth.currentUser;
             try {
-                const cred = await signInAnonymously(auth);
-                return cred.user;
+                if (initialAuthToken) {
+                    const cred = await signInWithCustomToken(auth, initialAuthToken);
+                    return cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    return cred.user;
+                }
             } catch (err) {
                 console.error("Auth error:", err);
-                return null;
+                try {
+                    const cred = await signInAnonymously(auth);
+                    return cred.user;
+                } catch (fallbackErr) {
+                    console.error("Fallback auth error:", fallbackErr);
+                    return null;
+                }
             }
         }
 
@@ -279,6 +290,7 @@
         const MESSAGES_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'messages');
 
         window.addEventListener('DOMContentLoaded', async () => {
+            await ensureAuth();
             const savedUser = localStorage.getItem('cyberchat_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
@@ -288,7 +300,6 @@
             } else {
                 document.getElementById('auth-view').classList.remove('hidden');
             }
-            await ensureAuth();
         });
 
         const tabAuthLogin = document.getElementById('auth-tab-login');
@@ -824,7 +835,7 @@
         };
 
         window.deleteMessage = async (msgId) => {
-            showModalConfirmAction("Apagar Mensagem", "Tem certeza que deseja apagar esta mensagem para todos? Ela será removida do servidor do Firebase.", async () => {
+            showModalConfirmAction("Apagar Mensagem", "Tem certeza que deseja apagar esta mensagem para todos?", async () => {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
                 closeModal();
             });
