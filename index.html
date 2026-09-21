@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberChat E2EE</title>
+    <title>CyberChat</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for icons -->
@@ -107,8 +107,14 @@
                         <button id="btn-settings" title="Configurar Gemini API" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
                             <i class="fa-solid fa-gear text-whatsapp-green"></i>
                         </button>
-                        <button id="btn-add-contact" title="Adicionar Contato" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
-                            <i class="fa-solid fa-user-plus text-whatsapp-green"></i>
+                        <!-- Botão de Notificações (Sino) -->
+                        <button id="btn-notifications" title="Notificações" class="relative hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
+                            <i class="fa-solid fa-bell text-whatsapp-green"></i>
+                            <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                        </button>
+                        <!-- Botão Lupa (Solicitar Conversa) -->
+                        <button id="btn-request-chat" title="Solicitar Conversa" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
+                            <i class="fa-solid fa-magnifying-glass text-whatsapp-green"></i>
                         </button>
                         <button id="btn-create-group" title="Criar Grupo" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
                             <i class="fa-solid fa-users text-whatsapp-green"></i>
@@ -128,7 +134,7 @@
 
                 <div class="flex border-b border-whatsapp-border bg-whatsapp-dark text-xs font-semibold text-whatsapp-subtext">
                     <button id="tab-chats" class="flex-1 py-3 border-b-2 border-whatsapp-green text-whatsapp-green text-center transition">CONVERSAS</button>
-                    <button id="tab-contacts" class="flex-1 py-3 text-center transition hover:text-whatsapp-text">CONTATOS</button>
+                    <button id="tab-contacts" class="flex-1 py-3 text-center transition hover:text-whatsapp-text">SEGUIDOS</button>
                 </div>
 
                 <div id="sidebar-list" class="flex-1 overflow-y-auto divide-y divide-whatsapp-border/40"></div>
@@ -148,9 +154,7 @@
                     <div class="bg-whatsapp-panel px-4 py-3 flex items-center justify-between border-b border-whatsapp-border">
                         <div class="flex items-center gap-3 min-w-0">
                             <button id="btn-back-to-list" class="md:hidden text-whatsapp-subtext text-lg mr-1"><i class="fa-solid fa-arrow-left"></i></button>
-                            <!-- Foto do Grupo clicável para alterar imagem -->
                             <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border shrink-0 cursor-pointer hover:opacity-80 transition" title="Clique para alterar a foto do grupo" alt="Avatar">
-                            <!-- Nome do Grupo clicável para alterar apenas o nome -->
                             <div id="active-chat-name-trigger" class="flex items-center gap-3 cursor-pointer min-w-0 group flex-1" title="Clique para alterar o nome">
                                 <div class="min-w-0">
                                     <h3 id="active-chat-name" class="font-medium text-sm text-whatsapp-text truncate group-hover:underline">Nome</h3>
@@ -219,7 +223,9 @@
         let activeTab = 'chats';
         let chatsData = [];
         let contactsData = [];
-        let blockedUsersData = [];
+        let followRequestsData = [];
+        let sentRequestsData = [];
+        let blockedUsersData = []; // Todos os bloqueios cadastrados no banco
         let messagesData = [];
         let usersDirectory = [];
         let unsubscribeMessages = null;
@@ -278,13 +284,31 @@
             return matchedUser && matchedUser.displayName ? matchedUser.displayName : username;
         }
 
+        // VERIFICAÇÃO DE BLOQUEIO BIDIRECIONAL CORRIGIDA:
+        // Retorna true se EU bloqueei o usuário OU se O USUÁRIO me bloqueou.
         function isUserBlocked(username) {
             if (!username) return false;
-            return blockedUsersData.some(b => b.blockedUser.toLowerCase() === username.toLowerCase());
+            const myUser = (currentUser.usernameLower || currentUser.username || '').toLowerCase();
+            const targetUser = username.toLowerCase();
+
+            return blockedUsersData.some(b => {
+                const owner = (b.ownerUsername || '').toLowerCase();
+                const blocked = (b.blockedUser || '').toLowerCase();
+                // Caso 1: Eu sou o dono do bloqueio e bloqueei o target
+                // Caso 2: O target é o dono do bloqueio e me bloqueou
+                return (owner === myUser && blocked === targetUser) || (owner === targetUser && blocked === myUser);
+            });
+        }
+
+        function canSendMessageTo(username) {
+            if (!username) return false;
+            const uLower = username.toLowerCase();
+            return contactsData.some(c => c.name.toLowerCase() === uLower);
         }
 
         const USERS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'users');
         const CONTACTS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'contacts');
+        const FOLLOW_REQUESTS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'follow_requests');
         const BLOCKED_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'blocked');
         const CHATS_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'chats');
         const MESSAGES_PATH = () => collection(db, 'artifacts', appId, 'public', 'data', 'messages');
@@ -408,13 +432,22 @@
                 if (activeTab === 'contacts') renderSidebarList();
             });
 
+            onSnapshot(FOLLOW_REQUESTS_PATH(), (snapshot) => {
+                followRequestsData = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if ((data.targetUsername || '').toLowerCase() === (currentUser.usernameLower || currentUser.username).toLowerCase()) {
+                        followRequestsData.push({ id: docSnap.id, ...data });
+                    }
+                });
+                updateNotificationBadge();
+            });
+
+            // Carrega TODOS os bloqueios do sistema para poder checar se fomos bloqueados também
             onSnapshot(BLOCKED_PATH(), (snapshot) => {
                 blockedUsersData = [];
                 snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if ((data.ownerUsername || '').toLowerCase() === (currentUser.usernameLower || currentUser.username).toLowerCase()) {
-                        blockedUsersData.push({ id: docSnap.id, ...data });
-                    }
+                    blockedUsersData.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 if (currentChatId) {
                     const activeChat = chatsData.find(c => c.id === currentChatId);
@@ -443,6 +476,17 @@
                     }
                 }
             });
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notification-badge');
+            const count = followRequestsData.length;
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
         }
 
         const tabChats = document.getElementById('tab-chats');
@@ -492,7 +536,7 @@
             } else {
                 const filtered = contactsData.filter(c => c.name.toLowerCase().includes(searchVal));
                 if (filtered.length === 0) {
-                    sidebarList.innerHTML = `<div class="p-6 text-center text-whatsapp-subtext text-sm">Nenhum contato.</div>`;
+                    sidebarList.innerHTML = `<div class="p-6 text-center text-whatsapp-subtext text-sm">Nenhum usuário seguido.</div>`;
                     return;
                 }
                 filtered.forEach(contact => {
@@ -513,19 +557,105 @@
 
         document.getElementById('search-input').addEventListener('input', renderSidebarList);
 
-        document.getElementById('btn-add-contact').addEventListener('click', () => {
-            showModalForm("Adicionar Contato", [{ id: 'c-name', label: 'Nome de usuário', placeholder: 'usuario' }], async (vals) => {
-                const name = vals['c-name'].trim();
-                if (!name) return;
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'contacts', `${currentUser.usernameLower}_${name.toLowerCase()}`), {
-                    ownerUsername: (currentUser.usernameLower || currentUser.username).toLowerCase(),
-                    name,
+        document.getElementById('btn-request-chat').addEventListener('click', () => {
+            showModalForm("Solicitar Conversa", [{ id: 'target-name', label: 'Nome de usuário', placeholder: 'usuario' }], async (vals) => {
+                const targetName = vals['target-name'].trim();
+                if (!targetName) return;
+
+                if (targetName.toLowerCase() === currentUser.username.toLowerCase()) {
+                    showCustomModal("Aviso", "Você não pode enviar solicitação para si mesmo.");
+                    return;
+                }
+
+                const targetLower = targetName.toLowerCase();
+                const userDocSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetLower));
+                if (!userDocSnap.exists()) {
+                    showCustomModal("Erro", "Usuário não encontrado!");
+                    return;
+                }
+
+                const reqId = `${currentUser.usernameLower}_${targetLower}`;
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'follow_requests', reqId), {
+                    fromUsername: currentUser.username,
+                    fromDisplayName: currentUser.displayName || currentUser.username,
+                    targetUsername: targetLower,
                     createdAt: new Date().toISOString()
                 });
-                activeTab = 'contacts';
-                tabContacts.click();
+
+                showCustomModal("Sucesso", `Pedido para seguir enviado para @${targetName}! Aguarde a aceitação.`);
             });
         });
+
+        document.getElementById('btn-notifications').addEventListener('click', () => {
+            if (followRequestsData.length === 0) {
+                showCustomModal("Notificações", "Nenhuma notificação de pedido para seguir no momento.");
+                return;
+            }
+
+            let html = `<div class="flex flex-col gap-3 max-h-60 overflow-y-auto">`;
+            followRequestsData.forEach(req => {
+                html += `
+                    <div class="bg-whatsapp-inputBg p-3 rounded-lg border border-whatsapp-border flex flex-col gap-2" id="req-card-${req.id}">
+                        <div class="text-xs text-whatsapp-text"><b>${req.fromDisplayName || req.fromUsername}</b> (@${req.fromUsername}) pediu para te seguir.</div>
+                        <div class="flex gap-2">
+                            <button onclick="window.acceptFollow('${req.id}', '${req.fromUsername}')" class="flex-1 bg-whatsapp-green hover:bg-emerald-600 text-white py-1 rounded text-xs font-medium">Aceitar</button>
+                            <button onclick="window.rejectFollow('${req.id}')" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-1 rounded text-xs font-medium">Rejeitar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            document.getElementById('modal-title').textContent = "Notificações (Pedidos para Seguir)";
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal-footer').innerHTML = `
+                <button onclick="window.clearAllNotifications()" class="bg-whatsapp-inputBg text-whatsapp-subtext hover:text-whatsapp-text px-3 py-2 rounded-lg text-xs mr-auto">Limpar Notificações</button>
+                <button onclick="closeModal()" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Fechar</button>
+            `;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        });
+
+        window.acceptFollow = async (reqId, fromUsername) => {
+            const myUsername = currentUser.usernameLower || currentUser.username;
+            const targetUserLower = fromUsername.toLowerCase();
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'contacts', `${myUsername}_${targetUserLower}`), {
+                ownerUsername: myUsername,
+                name: fromUsername,
+                createdAt: new Date().toISOString()
+            });
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'contacts', `${targetUserLower}_${myUsername}`), {
+                ownerUsername: targetUserLower,
+                name: currentUser.username,
+                createdAt: new Date().toISOString()
+            });
+
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'follow_requests', reqId));
+            
+            followRequestsData = followRequestsData.filter(r => r.id !== reqId);
+            updateNotificationBadge();
+            closeModal();
+            showCustomModal("Sucesso", `Você aceitou o pedido de @${fromUsername}! A conversa foi liberada para ambos.`);
+        };
+
+        window.rejectFollow = async (reqId) => {
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'follow_requests', reqId));
+            followRequestsData = followRequestsData.filter(r => r.id !== reqId);
+            updateNotificationBadge();
+            closeModal();
+            showCustomModal("Aviso", "Pedido rejeitado. O usuário não poderá te enviar mensagens.");
+        };
+
+        window.clearAllNotifications = async () => {
+            for (const req of followRequestsData) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'follow_requests', req.id));
+            }
+            followRequestsData = [];
+            updateNotificationBadge();
+            closeModal();
+            showCustomModal("Limpo", "Todas as notificações foram limpas.");
+        };
 
         async function startDirectChat(contact) {
             const myU = (currentUser.usernameLower || currentUser.username).toLowerCase();
@@ -543,7 +673,7 @@
 
         document.getElementById('btn-create-group').addEventListener('click', () => {
             if (contactsData.length === 0) {
-                showCustomModal("Aviso", "Adicione contatos antes de criar grupos.");
+                showCustomModal("Aviso", "Siga usuários antes de criar grupos.");
                 return;
             }
             let html = `<div><label class="block text-xs text-whatsapp-subtext mb-1">Nome do Grupo</label><input type="text" id="g-name" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-3 py-2 text-sm text-whatsapp-text mb-3"><label class="block text-xs text-whatsapp-subtext mb-2">Participantes</label><div class="flex flex-col gap-1 max-h-40 overflow-y-auto">`;
@@ -617,7 +747,9 @@
         function updateChatInputState(otherUsername) {
             const footer = document.getElementById('chat-input-footer');
             if (otherUsername && isUserBlocked(otherUsername)) {
-                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Este contato está bloqueado. Você não pode enviar mensagens.</div>`;
+                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Esta conversa está bloqueada por uma das partes. Nenhuma mensagem pode ser enviada.</div>`;
+            } else if (otherUsername && !canSendMessageTo(otherUsername)) {
+                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Você precisa pedir para seguir e ter a solicitação aceita para mandar mensagens.</div>`;
             } else {
                 footer.innerHTML = `
                     <input type="text" id="message-input" placeholder="Digite uma mensagem ou @gemini..." class="flex-1 bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green">
@@ -630,7 +762,6 @@
             }
         }
 
-        // Clicar no NOME DO GRUPO (Altera apenas o nome se for o criador, ou abre opções de bloqueio se for chat privado)
         document.getElementById('active-chat-name-trigger').addEventListener('click', () => {
             const chat = chatsData.find(c => c.id === currentChatId);
             if (!chat) return;
@@ -656,15 +787,19 @@
             } else {
                 const otherUsername = chat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
                 if (!otherUsername) return;
-                const blocked = isUserBlocked(otherUsername);
                 
-                showCustomModalWithOptions(otherUsername, blocked ? "Desbloquear Contato" : "Bloquear Contato", blocked ? "Este contato está bloqueado." : "Deseja bloquear este contato?", async () => {
-                    if (blocked) {
-                        const bItem = blockedUsersData.find(b => b.blockedUser.toLowerCase() === otherUsername.toLowerCase());
-                        if (bItem) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', bItem.id));
+                // Verifica se EU especificamente bloqueei este contato
+                const myUserLower = (currentUser.usernameLower || currentUser.username).toLowerCase();
+                const targetLower = otherUsername.toLowerCase();
+                const myBlockItem = blockedUsersData.find(b => (b.ownerUsername || '').toLowerCase() === myUserLower && (b.blockedUser || '').toLowerCase() === targetLower);
+                const isBlockedByMe = !!myBlockItem;
+                
+                showCustomModalWithOptions(otherUsername, isBlockedByMe ? "Desbloquear Contato" : "Bloquear Contato", isBlockedByMe ? "Você bloqueou este contato." : "Deseja bloquear este contato? Nenhum dos dois poderá enviar mensagens.", async () => {
+                    if (isBlockedByMe) {
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', myBlockItem.id));
                     } else {
-                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', `${currentUser.usernameLower}_${otherUsername.toLowerCase()}`), {
-                            ownerUsername: (currentUser.usernameLower || currentUser.username).toLowerCase(),
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', `${myUserLower}_${targetLower}`), {
+                            ownerUsername: myUserLower,
                             blockedUser: otherUsername,
                             createdAt: new Date().toISOString()
                         });
@@ -675,7 +810,6 @@
             }
         });
 
-        // Clicar na FOTO DO GRUPO (Altera a foto do grupo escolhendo do armazenamento)
         document.getElementById('active-chat-avatar').addEventListener('click', () => {
             const chat = chatsData.find(c => c.id === currentChatId);
             if (!chat || !chat.isGroup) {
@@ -696,7 +830,6 @@
             });
         });
 
-        // Clicar na FOTO DO PERFIL (Altera a foto do seu próprio perfil escolhendo do armazenamento)
         document.getElementById('my-avatar').addEventListener('click', () => {
             openImageStoragePicker(async (base64Image) => {
                 currentUser.avatar = base64Image;
@@ -710,10 +843,9 @@
             });
         });
 
-        // Seletor de Arquivos do Armazenamento Local
         function openImageStoragePicker(onImageReady) {
             const fileInput = document.getElementById('hidden-file-input');
-            fileInput.value = ''; // reseta
+            fileInput.value = '';
             fileInput.onchange = (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -730,7 +862,6 @@
             fileInput.click();
         }
 
-        // Clicar no NOME DO PERFIL (Altera apenas o seu nome)
         function openMyNameModal() {
             showModalForm("Alterar Seu Nome", [
                 { id: 'nick', label: 'Seu Nome Exibido', value: currentUser.displayName }
@@ -881,7 +1012,7 @@
             const activeChat = chatsData.find(c => c.id === currentChatId);
             if (!activeChat.isGroup) {
                 const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
-                if (otherUsername && isUserBlocked(otherUsername)) return;
+                if (otherUsername && (isUserBlocked(otherUsername) || !canSendMessageTo(otherUsername))) return;
             }
 
             input.value = '';
