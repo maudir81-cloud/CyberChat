@@ -65,10 +65,10 @@
         <div id="auth-view" class="absolute inset-0 flex items-center justify-center bg-whatsapp-darker p-4 overflow-y-auto z-20">
             <div class="bg-whatsapp-dark w-full max-w-md p-6 sm:p-8 rounded-xl shadow-2xl border border-whatsapp-border flex flex-col items-center my-auto">
                 <div class="w-16 h-16 bg-whatsapp-green rounded-full flex items-center justify-center text-3xl text-white mb-4 shadow-lg">
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <i class="fa-solid fa-lock"></i>
                 </div>
                 <h1 class="text-2xl font-bold text-whatsapp-text mb-1">CyberChat</h1>
-                <p class="text-whatsapp-subtext text-xs mb-6 text-center">Mensagens criptografadas com E2EE.</p>
+                <p class="text-whatsapp-subtext text-xs mb-6 text-center">Criptografado.</p>
                 
                 <div class="flex w-full bg-whatsapp-inputBg rounded-lg p-1 mb-6 border border-whatsapp-border">
                     <button id="auth-tab-login" type="button" class="flex-1 py-2 text-xs font-semibold rounded-md bg-whatsapp-green text-white transition">Entrar</button>
@@ -104,12 +104,10 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2 text-whatsapp-subtext text-lg">
-                        <!-- Botão de Notificações (Sino) -->
                         <button id="btn-notifications" title="Notificações" class="relative hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
                             <i class="fa-solid fa-bell text-whatsapp-green"></i>
                             <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
                         </button>
-                        <!-- Botão Lupa (Solicitar Conversa) -->
                         <button id="btn-request-chat" title="Solicitar Conversa" class="hover:text-whatsapp-text transition flex items-center gap-1.5 text-xs bg-whatsapp-inputBg px-2.5 py-1.5 rounded-lg border border-whatsapp-border">
                             <i class="fa-solid fa-magnifying-glass text-whatsapp-green"></i>
                         </button>
@@ -141,21 +139,21 @@
             <div id="chat-area" class="flex-1 h-full bg-whatsapp-darker flex flex-col hidden md:flex min-w-0 absolute md:relative inset-0 z-20 md:z-auto">
                 <div id="no-chat-selected" class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-whatsapp-darker border-b-8 border-whatsapp-green">
                     <div class="w-48 h-48 opacity-40 mb-6 flex items-center justify-center text-7xl text-whatsapp-subtext">
-                        <i class="fa-brands fa-whatsapp"></i>
+                        <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <h2 class="text-2xl font-light text-whatsapp-text mb-2">CyberChat Web</h2>
-                    <p class="text-sm text-whatsapp-subtext max-w-md">Selecione uma conversa para começar a trocar mensagens com segurança.</p>
+                    <h2 class="text-2xl font-light text-whatsapp-text mb-2">CyberChat Web E2EE</h2>
+                    <p class="text-sm text-whatsapp-subtext max-w-md">Suas mensagens são protegidas por criptografia de ponta a ponta real (retenção de 30 dias).</p>
                 </div>
 
                 <div id="active-chat" class="flex-1 flex flex-col h-full hidden min-w-0">
                     <div class="bg-whatsapp-panel px-4 py-3 flex items-center justify-between border-b border-whatsapp-border">
                         <div class="flex items-center gap-3 min-w-0">
                             <button id="btn-back-to-list" class="md:hidden text-whatsapp-subtext text-lg mr-1"><i class="fa-solid fa-arrow-left"></i></button>
-                            <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border shrink-0 cursor-pointer hover:opacity-80 transition" title="Clique para alterar a foto do grupo" alt="Avatar">
-                            <div id="active-chat-name-trigger" class="flex items-center gap-3 cursor-pointer min-w-0 group flex-1" title="Clique para alterar o nome">
+                            <img id="active-chat-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-whatsapp-border shrink-0 cursor-pointer hover:opacity-80 transition" title="Foto" alt="Avatar">
+                            <div id="active-chat-name-trigger" class="flex items-center gap-3 cursor-pointer min-w-0 group flex-1" title="Opções">
                                 <div class="min-w-0">
                                     <h3 id="active-chat-name" class="font-medium text-sm text-whatsapp-text truncate group-hover:underline">Nome</h3>
-                                    <span id="active-chat-status" class="text-xs text-whatsapp-subtext block truncate">Online</span>
+                                    <span id="active-chat-status" class="text-xs text-whatsapp-subtext block truncate"><i class="fa-solid fa-lock text-[10px] text-whatsapp-green mr-1"></i>E2EE Ativo (Expira em 30 dias)</span>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +163,16 @@
 
                     <!-- Input Footer -->
                     <div id="chat-input-footer" class="bg-whatsapp-panel px-4 py-3 flex items-center gap-3 border-t border-whatsapp-border relative">
-                        <input type="text" id="message-input" maxlength="500" placeholder="Digite uma mensagem..." class="flex-1 bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green">
+                        <button id="btn-send-photo" title="Enviar Foto (Máx 500KB)" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                        <button id="btn-send-audio" title="Gravar Áudio (Máx 60s)" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <div class="flex-1 relative flex items-center">
+                            <input type="text" id="message-input" maxlength="450" placeholder="Digite uma mensagem (máx 450 caracteres)..." class="w-full bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green pr-14">
+                            <span id="char-counter" class="absolute right-3 text-[10px] text-whatsapp-subtext">0/450</span>
+                        </div>
                         <button id="btn-send-message" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
@@ -221,11 +228,110 @@
         let chatsData = [];
         let contactsData = [];
         let followRequestsData = [];
-        let sentRequestsData = [];
-        let blockedUsersData = []; // Todos os bloqueios cadastrados no banco
+        let blockedUsersData = [];
         let messagesData = [];
         let usersDirectory = [];
         let unsubscribeMessages = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordingTimeout = null;
+        let realtimeTimerInterval = null;
+
+        const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+        async function exportPublicKey(key) {
+            return await window.crypto.subtle.exportKey("jwk", key);
+        }
+
+        async function importPublicKey(jwk) {
+            return await window.crypto.subtle.importKey(
+                "jwk",
+                jwk,
+                { name: "ECDH", namedCurve: "P-256" },
+                true,
+                []
+            );
+        }
+
+        async function generateKeyPair() {
+            return await window.crypto.subtle.generateKey(
+                { name: "ECDH", namedCurve: "P-256" },
+                true,
+                ["deriveKey", "deriveBits"]
+            );
+        }
+
+        async function deriveSharedSecretKey(privateKey, remotePublicKey) {
+            return await window.crypto.subtle.deriveKey(
+                { name: "ECDH", public: remotePublicKey },
+                privateKey,
+                { name: "AES-GCM", length: 256 },
+                true,
+                ["encrypt", "decrypt"]
+            );
+        }
+
+        async function encryptMessage(text, sharedKey) {
+            const iv = window.crypto.getRandomValues(new Uint8Array(12));
+            const encoded = new TextEncoder().encode(text);
+            const ciphertext = await window.crypto.subtle.encrypt(
+                { name: "AES-GCM", iv: iv },
+                sharedKey,
+                encoded
+            );
+
+            let ivBinary = '';
+            for (let i = 0; i < iv.length; i++) {
+                ivBinary += String.fromCharCode(iv[i]);
+            }
+
+            const cipherBytes = new Uint8Array(ciphertext);
+            let cipherBinary = '';
+            const chunkSize = 8192;
+            for (let i = 0; i < cipherBytes.length; i += chunkSize) {
+                cipherBinary += String.fromCharCode(...cipherBytes.subarray(i, i + chunkSize));
+            }
+
+            return {
+                iv: btoa(ivBinary),
+                data: btoa(cipherBinary)
+            };
+        }
+
+        async function decryptMessage(encryptedObj, sharedKey) {
+            try {
+                const iv = Uint8Array.from(atob(encryptedObj.iv), c => c.charCodeAt(0));
+                const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
+                const decrypted = await window.crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv },
+                    sharedKey,
+                    data
+                );
+                return new TextDecoder().decode(decrypted);
+            } catch (err) {
+                console.error("Erro ao descriptografar mensagem:", err);
+                return "[Mensagem criptografada ou chave inválida]";
+            }
+        }
+
+        async function savePrivateKeyToStorage(username, privateKey) {
+            const jwk = await window.crypto.subtle.exportKey("jwk", privateKey);
+            localStorage.setItem(`cyberchat_priv_${username.toLowerCase()}`, JSON.stringify(jwk));
+        }
+
+        async function loadPrivateKeyFromStorage(username) {
+            const jwkStr = localStorage.getItem(`cyberchat_priv_${username.toLowerCase()}`);
+            if (!jwkStr) return null;
+            const jwk = JSON.parse(jwkStr);
+            return await window.crypto.subtle.importKey(
+                "jwk",
+                jwk,
+                { name: "ECDH", namedCurve: "P-256" },
+                true,
+                ["deriveKey", "deriveBits"]
+            );
+        }
 
         async function ensureAuth() {
             if (!auth) return null;
@@ -276,13 +382,10 @@
             return matchedUser && matchedUser.displayName ? matchedUser.displayName : username;
         }
 
-        // VERIFICAÇÃO DE BLOQUEIO BIDIRECIONAL:
-        // Retorna true se EU bloqueei o usuário OU se O USUÁRIO me bloqueou.
         function isUserBlocked(username) {
             if (!username) return false;
             const myUser = (currentUser.usernameLower || currentUser.username || '').toLowerCase();
             const targetUser = username.toLowerCase();
-
             return blockedUsersData.some(b => {
                 const owner = (b.ownerUsername || '').toLowerCase();
                 const blocked = (b.blockedUser || '').toLowerCase();
@@ -308,6 +411,7 @@
             const savedUser = localStorage.getItem('cyberchat_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
+                currentUser.privateKey = await loadPrivateKeyFromStorage(currentUser.username);
                 document.getElementById('auth-view').classList.add('hidden');
                 document.getElementById('main-view').classList.remove('hidden');
                 initDashboard();
@@ -368,7 +472,24 @@
                         usernameError.classList.remove('hidden');
                         return;
                     }
-                    currentUser = { uid: data.uid || usernameLower, username: data.username || usernameInput, usernameLower, displayName: data.displayName || usernameInput, avatar: data.avatar };
+                    
+                    let privKey = await loadPrivateKeyFromStorage(usernameInput);
+                    if (!privKey) {
+                        const keyPair = await generateKeyPair();
+                        privKey = keyPair.privateKey;
+                        await savePrivateKeyToStorage(usernameInput, privKey);
+                        const pubJwk = await exportPublicKey(keyPair.publicKey);
+                        await updateDoc(userDocRef, { publicKey: pubJwk });
+                    }
+
+                    currentUser = { 
+                        uid: data.uid || usernameLower, 
+                        username: data.username || usernameInput, 
+                        usernameLower, 
+                        displayName: data.displayName || usernameInput, 
+                        avatar: data.avatar,
+                        privateKey: privKey 
+                    };
                 } else {
                     if (userDocSnap.exists()) {
                         usernameError.textContent = 'Usuário já existe!';
@@ -376,17 +497,31 @@
                         return;
                     }
                     isNew = true;
+                    
+                    const keyPair = await generateKeyPair();
+                    const pubJwk = await exportPublicKey(keyPair.publicKey);
+                    await savePrivateKeyToStorage(usernameInput, keyPair.privateKey);
+
                     currentUser = { 
                         uid: firebaseAuthUser.uid, 
                         username: usernameInput, 
                         usernameLower, 
                         displayName: usernameInput, 
-                        avatar: `https://placehold.co/100x100/00a884/e9edef?text=${usernameInput.charAt(0).toUpperCase()}` 
+                        avatar: `https://placehold.co/100x100/00a884/e9edef?text=${usernameInput.charAt(0).toUpperCase()}`,
+                        privateKey: keyPair.privateKey
                     };
-                    await setDoc(userDocRef, { ...currentUser, password: passwordInput, createdAt: new Date().toISOString() });
+
+                    await setDoc(userDocRef, { 
+                        ...currentUser, 
+                        privateKey: null,
+                        publicKey: pubJwk, 
+                        password: passwordInput, 
+                        createdAt: new Date().toISOString() 
+                    });
                 }
 
-                localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
+                const sessionData = { uid: currentUser.uid, username: currentUser.username, usernameLower, displayName: currentUser.displayName, avatar: currentUser.avatar };
+                localStorage.setItem('cyberchat_user', JSON.stringify(sessionData));
                 document.getElementById('auth-view').classList.add('hidden');
                 document.getElementById('main-view').classList.remove('hidden');
                 initDashboard();
@@ -402,6 +537,11 @@
             document.getElementById('my-name-display').textContent = currentUser.displayName || currentUser.username;
             document.getElementById('my-phone-display').textContent = `@${currentUser.username}`;
             loadDirectoryAndData();
+            if (realtimeTimerInterval) clearInterval(realtimeTimerInterval);
+            realtimeTimerInterval = setInterval(() => {
+                checkExpiredMessages();
+                updateMessageTimersDOM();
+            }, 1000);
         }
 
         async function loadDirectoryAndData() {
@@ -433,7 +573,6 @@
                 updateNotificationBadge();
             });
 
-            // Carrega TODOS os bloqueios do sistema para poder checar se fomos bloqueados também
             onSnapshot(BLOCKED_PATH(), (snapshot) => {
                 blockedUsersData = [];
                 snapshot.forEach(docSnap => {
@@ -517,7 +656,7 @@
                                 <h4 class="font-medium text-sm text-whatsapp-text truncate">${getChatDisplayName(chat)}</h4>
                                 <span class="text-[10px] text-whatsapp-subtext shrink-0 ml-1">${chat.lastTime || ''}</span>
                             </div>
-                            <p class="text-xs text-whatsapp-subtext truncate mt-0.5">${chat.lastMessage || 'CyberChat E2EE'}</p>
+                            <p class="text-xs text-whatsapp-subtext truncate mt-0.5"><i class="fa-solid fa-lock text-[9px] mr-1"></i>${chat.lastMessage || 'E2EE Ativo'}</p>
                         </div>
                     `;
                     item.onclick = () => openChat(chat);
@@ -572,7 +711,7 @@
                     createdAt: new Date().toISOString()
                 });
 
-                showCustomModal("Sucesso", `Pedido para seguir enviado para @${targetName}! Aguarde a aceitação.`);
+                showCustomModal("Sucesso", `Pedido para seguir enviado para @${targetName}!`);
             });
         });
 
@@ -585,7 +724,7 @@
             let html = `<div class="flex flex-col gap-3 max-h-60 overflow-y-auto">`;
             followRequestsData.forEach(req => {
                 html += `
-                    <div class="bg-whatsapp-inputBg p-3 rounded-lg border border-whatsapp-border flex flex-col gap-2" id="req-card-${req.id}">
+                    <div class="bg-whatsapp-inputBg p-3 rounded-lg border border-whatsapp-border flex flex-col gap-2">
                         <div class="text-xs text-whatsapp-text"><b>${req.fromDisplayName || req.fromUsername}</b> (@${req.fromUsername}) pediu para te seguir.</div>
                         <div class="flex gap-2">
                             <button onclick="window.acceptFollow('${req.id}', '${req.fromUsername}')" class="flex-1 bg-whatsapp-green hover:bg-emerald-600 text-white py-1 rounded text-xs font-medium">Aceitar</button>
@@ -596,10 +735,10 @@
             });
             html += `</div>`;
 
-            document.getElementById('modal-title').textContent = "Notificações (Pedidos para Seguir)";
+            document.getElementById('modal-title').textContent = "Notificações";
             document.getElementById('modal-body').innerHTML = html;
             document.getElementById('modal-footer').innerHTML = `
-                <button onclick="window.clearAllNotifications()" class="bg-whatsapp-inputBg text-whatsapp-subtext hover:text-whatsapp-text px-3 py-2 rounded-lg text-xs mr-auto">Limpar Notificações</button>
+                <button onclick="window.clearAllNotifications()" class="bg-whatsapp-inputBg text-whatsapp-subtext hover:text-whatsapp-text px-3 py-2 rounded-lg text-xs mr-auto">Limpar</button>
                 <button onclick="closeModal()" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Fechar</button>
             `;
             document.getElementById('custom-modal').classList.remove('hidden');
@@ -622,11 +761,10 @@
             });
 
             await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'follow_requests', reqId));
-            
             followRequestsData = followRequestsData.filter(r => r.id !== reqId);
             updateNotificationBadge();
             closeModal();
-            showCustomModal("Sucesso", `Você aceitou o pedido de @${fromUsername}! A conversa foi liberada para ambos.`);
+            showCustomModal("Sucesso", `Você aceitou @${fromUsername}! Conversa liberada.`);
         };
 
         window.rejectFollow = async (reqId) => {
@@ -634,7 +772,6 @@
             followRequestsData = followRequestsData.filter(r => r.id !== reqId);
             updateNotificationBadge();
             closeModal();
-            showCustomModal("Aviso", "Pedido rejeitado. O usuário não poderá te enviar mensagens.");
         };
 
         window.clearAllNotifications = async () => {
@@ -644,7 +781,6 @@
             followRequestsData = [];
             updateNotificationBadge();
             closeModal();
-            showCustomModal("Limpo", "Todas as notificações foram limpas.");
         };
 
         async function startDirectChat(contact) {
@@ -653,7 +789,7 @@
             let chat = chatsData.find(c => !c.isGroup && c.participants && c.participants.some(p => p.toLowerCase() === contactU));
             if (!chat) {
                 const chatId = 'chat_' + [myU, contactU].sort().join('_');
-                chat = { id: chatId, name: contact.name, isGroup: false, participants: [currentUser.username, contact.name], lastMessage: 'Conversa iniciada', lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+                chat = { id: chatId, name: contact.name, isGroup: false, participants: [currentUser.username, contact.name], lastMessage: 'E2EE Ativo', lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId), chat);
             }
             activeTab = 'chats';
@@ -671,7 +807,7 @@
                 html += `<label class="flex items-center gap-2 text-sm text-whatsapp-text"><input type="checkbox" name="g-member" value="${c.name}"> ${c.name}</label>`;
             });
             html += `</div></div>`;
-            document.getElementById('modal-title').textContent = "Criar Grupo";
+            document.getElementById('modal-title').textContent = "Criar Grupo E2EE";
             document.getElementById('modal-body').innerHTML = html;
             document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="confirm-group" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Criar</button>`;
             document.getElementById('custom-modal').classList.remove('hidden');
@@ -709,10 +845,10 @@
             document.getElementById('active-chat-avatar').src = getChatAvatar(chat);
             
             if (chat.isGroup) {
-                document.getElementById('active-chat-status').textContent = `Grupo • ${chat.participants.length} membros (Criador: ${chat.creator || 'Desconhecido'})`;
+                document.getElementById('active-chat-status').textContent = `Grupo E2EE • ${chat.participants.length} membros`;
                 updateChatInputState(null);
             } else {
-                document.getElementById('active-chat-status').textContent = 'Apenas os participantes têm acesso a esta conversa.';
+                document.getElementById('active-chat-status').innerHTML = '<i class="fa-solid fa-lock text-[10px] text-whatsapp-green mr-1"></i>Criptografado de ponta a ponta';
                 const otherUsername = chat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
                 updateChatInputState(otherUsername);
             }
@@ -723,47 +859,477 @@
             }
 
             if (unsubscribeMessages) unsubscribeMessages();
-            unsubscribeMessages = onSnapshot(MESSAGES_PATH(), (snapshot) => {
-                messagesData = [];
+            unsubscribeMessages = onSnapshot(MESSAGES_PATH(), async (snapshot) => {
+                const rawMsgs = [];
+                const now = new Date().getTime();
+
                 snapshot.forEach(docSnap => {
                     const msg = { id: docSnap.id, ...docSnap.data() };
-                    if (msg.chatId === currentChatId) messagesData.push(msg);
+                    if (msg.chatId === currentChatId) {
+                        const msgTime = new Date(msg.timestamp).getTime();
+                        if (now - msgTime > THIRTY_DAYS_MS) {
+                            deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msg.id)).catch(() => {});
+                        } else {
+                            rawMsgs.push(msg);
+                        }
+                    }
                 });
-                messagesData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                renderMessages();
+                rawMsgs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                const currentMsgIds = messagesData.map(m => m.id).join(',');
+                const newMsgIds = rawMsgs.map(m => m.id).join(',');
+                
+                messagesData = [];
+                for (const msg of rawMsgs) {
+                    let decryptedText = msg.text;
+                    let decryptedMedia = msg.mediaUrl || null;
+                    let decryptedType = msg.type || 'text';
+
+                    if (msg.encryptedPayload && currentUser.privateKey) {
+                        try {
+                            const activeChatObj = chatsData.find(c => c.id === currentChatId);
+                            const otherUsername = activeChatObj && !activeChatObj.isGroup ? activeChatObj.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase()) : null;
+                            
+                            if (otherUsername) {
+                                const targetUserDoc = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === otherUsername.toLowerCase());
+                                if (targetUserDoc && targetUserDoc.publicKey) {
+                                    const remotePub = await importPublicKey(targetUserDoc.publicKey);
+                                    const sharedKey = await deriveSharedSecretKey(currentUser.privateKey, remotePub);
+                                    decryptedText = await decryptMessage(msg.encryptedPayload, sharedKey);
+                                    if (msg.encryptedMediaPayload) {
+                                        decryptedMedia = await decryptMessage(msg.encryptedMediaPayload, sharedKey);
+                                    }
+                                }
+                            } else if (msg.encryptedPayloadForGroup) {
+                                decryptedText = msg.encryptedPayloadForGroup;
+                                decryptedMedia = msg.mediaUrl || null;
+                            }
+                        } catch (e) {
+                            decryptedText = "[Erro ao descriptografar E2EE]";
+                        }
+                    }
+                    messagesData.push({ ...msg, decryptedText, decryptedMedia, decryptedType });
+                }
+
+                if (currentMsgIds !== newMsgIds) {
+                    renderMessages();
+                }
             });
         }
 
         function updateChatInputState(otherUsername) {
             const footer = document.getElementById('chat-input-footer');
             if (otherUsername && isUserBlocked(otherUsername)) {
-                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Esta conversa está bloqueada por uma das partes. Nenhuma mensagem pode ser enviada.</div>`;
+                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Conversa bloqueada.</div>`;
             } else if (otherUsername && !canSendMessageTo(otherUsername)) {
-                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Você precisa pedir para seguir e ter a solicitação aceita para mandar mensagens.</div>`;
+                footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Você precisa seguir o usuário para mandar mensagens.</div>`;
             } else {
                 footer.innerHTML = `
-                    <input type="text" id="message-input" maxlength="500" placeholder="Digite uma mensagem..." class="flex-1 bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green">
+                    <button id="btn-send-photo" title="Enviar Foto (Máx 500KB)" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                    <button id="btn-send-audio" title="Gravar Áudio (Máx 60s)" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <div class="flex-1 relative flex items-center">
+                        <input type="text" id="message-input" maxlength="450" placeholder="Digite uma mensagem (máx 450 caracteres)..." class="w-full bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green pr-14">
+                        <span id="char-counter" class="absolute right-3 text-[10px] text-whatsapp-subtext">0/450</span>
+                    </div>
                     <button id="btn-send-message" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 `;
-                document.getElementById('btn-send-message').addEventListener('click', sendMessage);
-                const msgInput = document.getElementById('message-input');
-                msgInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
-                
-                let limitAlerted = false;
-                msgInput.addEventListener('input', (e) => {
-                    if (e.target.value.length >= 500) {
-                        if (!limitAlerted) {
-                            showCustomModal("Aviso", "mensagem muito longa");
-                            limitAlerted = true;
-                        }
-                    } else {
-                        limitAlerted = false;
-                    }
-                });
+                setupInputEvents();
             }
         }
+
+        function setupInputEvents() {
+            const btnSend = document.getElementById('btn-send-message');
+            const msgInput = document.getElementById('message-input');
+            const charCounter = document.getElementById('char-counter');
+            const btnPhoto = document.getElementById('btn-send-photo');
+            const btnAudio = document.getElementById('btn-send-audio');
+
+            if (btnSend) btnSend.onclick = () => sendMessage();
+            if (msgInput) {
+                msgInput.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
+                msgInput.oninput = () => {
+                    const currentLen = msgInput.value.length;
+                    if (charCounter) charCounter.textContent = `${currentLen}/450`;
+                };
+            }
+            if (btnPhoto) btnPhoto.onclick = handlePhotoUploadClick;
+            if (btnAudio) btnAudio.onclick = toggleAudioRecording;
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#btn-send-photo')) {
+                handlePhotoUploadClick();
+            } else if (e.target.closest('#btn-send-audio')) {
+                toggleAudioRecording();
+            }
+        });
+
+        function handlePhotoUploadClick() {
+            const fileInput = document.getElementById('hidden-file-input');
+            fileInput.value = '';
+            fileInput.accept = 'image/*';
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (file.type.startsWith('video/') || file.name.match(/\.(mp4|avi|mov|mkv|webm|flv|3gp)$/i)) {
+                    showCustomModal("Erro", "Envio de vídeos é proibido nesta aplicação!");
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    showCustomModal("Erro", "Apenas arquivos de imagem são permitidos!");
+                    return;
+                }
+
+                if (file.size > 524288) { // 500KB
+                    showCustomModal("Erro", "A foto excede o tamanho máximo permitido de 500KB!");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (uploadEvent) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxDim = 800;
+                        if (width > maxDim || height > maxDim) {
+                            if (width > height) {
+                                height = Math.round((height * maxDim) / width);
+                                width = maxDim;
+                            } else {
+                                width = Math.round((width * maxDim) / height);
+                                height = maxDim;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        sendMediaMessage(compressedDataUrl, 'photo', '?? [Foto]');
+                    };
+                    img.src = uploadEvent.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+            fileInput.click();
+        }
+
+        async function toggleAudioRecording() {
+            const btnAudio = document.getElementById('btn-send-audio');
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        if (recordingTimeout) clearTimeout(recordingTimeout);
+                        recordingTimeout = null;
+
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.onload = async (e) => {
+                            await sendMediaMessage(e.target.result, 'audio', '?? [Áudio]');
+                        };
+                        reader.readAsDataURL(audioBlob);
+
+                        stream.getTracks().forEach(track => track.stop());
+                        isRecording = false;
+                        if (btnAudio) {
+                            btnAudio.classList.remove('text-red-500', 'animate-pulse');
+                            btnAudio.classList.add('text-whatsapp-subtext');
+                            btnAudio.title = "Gravar Áudio (Máx 60s)";
+                        }
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    if (btnAudio) {
+                        btnAudio.classList.remove('text-whatsapp-subtext');
+                        btnAudio.classList.add('text-red-500', 'animate-pulse');
+                        btnAudio.title = "Parar Gravação (Gravando...)";
+                    }
+
+                    recordingTimeout = setTimeout(() => {
+                        if (isRecording && mediaRecorder && mediaRecorder.state !== 'inactive') {
+                            mediaRecorder.stop();
+                        }
+                    }, 60000);
+
+                } catch (err) {
+                    showCustomModal("Erro", "Permissão de microfone negada ou indisponível.");
+                    isRecording = false;
+                }
+            } else {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+            }
+        }
+
+        async function sendMediaMessage(mediaDataUrl, type, placeholderText) {
+            if (!currentChatId) return;
+            const activeChat = chatsData.find(c => c.id === currentChatId);
+            let encryptedPayload = null;
+            let encryptedMediaPayload = null;
+
+            if (!activeChat.isGroup) {
+                const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                const targetUserDoc = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === otherUsername.toLowerCase());
+                
+                if (targetUserDoc && targetUserDoc.publicKey && currentUser.privateKey) {
+                    const remotePub = await importPublicKey(targetUserDoc.publicKey);
+                    const sharedKey = await deriveSharedSecretKey(currentUser.privateKey, remotePub);
+                    encryptedPayload = await encryptMessage(placeholderText, sharedKey);
+                    encryptedMediaPayload = await encryptMessage(mediaDataUrl, sharedKey);
+                }
+            }
+
+            const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
+            const msg = {
+                id: msgId,
+                chatId: currentChatId,
+                sender: currentUser.username,
+                text: placeholderText,
+                type: type,
+                mediaUrl: encryptedMediaPayload ? null : mediaDataUrl,
+                encryptedPayload: encryptedPayload,
+                encryptedMediaPayload: encryptedMediaPayload,
+                encryptedPayloadForGroup: activeChat.isGroup ? placeholderText : null,
+                timestamp: new Date().toISOString()
+            };
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), msg);
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                lastMessage: placeholderText,
+                lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text || !currentChatId) return;
+
+            if (text.length > 450) {
+                showCustomModal("Erro", "A mensagem excede o limite máximo de 450 caracteres!");
+                return;
+            }
+
+            const activeChat = chatsData.find(c => c.id === currentChatId);
+            let encryptedPayload = null;
+
+            if (activeChat.isGroup) {
+                encryptedPayload = null;
+            } else {
+                const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                const targetUserDoc = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === otherUsername.toLowerCase());
+                
+                if (targetUserDoc && targetUserDoc.publicKey && currentUser.privateKey) {
+                    const remotePub = await importPublicKey(targetUserDoc.publicKey);
+                    const sharedKey = await deriveSharedSecretKey(currentUser.privateKey, remotePub);
+                    encryptedPayload = await encryptMessage(text, sharedKey);
+                }
+            }
+
+            input.value = '';
+            const charCounter = document.getElementById('char-counter');
+            if (charCounter) charCounter.textContent = '0/450';
+
+            const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
+            const msg = {
+                id: msgId,
+                chatId: currentChatId,
+                sender: currentUser.username,
+                text: activeChat.isGroup ? text : "[E2EE Message]",
+                type: 'text',
+                encryptedPayload: encryptedPayload,
+                encryptedPayloadForGroup: activeChat.isGroup ? text : null,
+                timestamp: new Date().toISOString()
+            };
+
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), msg);
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                lastMessage: text,
+                lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+        }
+
+        const messagesContainer = document.getElementById('messages-container');
+        function renderMessages() {
+            messagesContainer.innerHTML = '';
+            const now = new Date().getTime();
+
+            messagesData.forEach(msg => {
+                const msgTime = new Date(msg.timestamp).getTime();
+                const diffMs = THIRTY_DAYS_MS - (now - msgTime);
+                if (diffMs <= 0) return;
+
+                const remainingSecs = Math.ceil(diffMs / 1000);
+                const remDays = Math.floor(remainingSecs / (3600 * 24));
+                const remHours = Math.floor((remainingSecs % (3600 * 24)) / 3600);
+                const remMins = Math.floor((remainingSecs % 3600) / 60);
+                const remSec = remainingSecs % 60;
+                
+                let timeStr = `${remDays}d ${remHours}h ${remMins}m ${remSec}s`;
+                if (remDays === 0) {
+                    timeStr = `${remHours}h ${remMins}m ${remSec}s`;
+                }
+
+                const isMe = msg.sender.toLowerCase() === currentUser.username.toLowerCase();
+                const div = document.createElement('div');
+                div.className = `flex flex-col max-w-[75%] mb-2 ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'} relative group`;
+                div.setAttribute('data-msg-id', msg.id);
+                div.setAttribute('data-timestamp', msg.timestamp);
+                
+                let contentHtml = '';
+                if (msg.decryptedType === 'photo' && msg.decryptedMedia) {
+                    contentHtml = `<img src="${msg.decryptedMedia}" class="rounded-lg max-w-xs max-h-60 object-cover mb-1 border border-whatsapp-border cursor-pointer" onclick="window.openImageModal('${msg.decryptedMedia}')">`;
+                } else if (msg.decryptedType === 'audio' && msg.decryptedMedia) {
+                    contentHtml = `<audio controls class="max-w-xs my-1"><source src="${msg.decryptedMedia}" type="audio/webm">Seu navegador não suporta áudio.</audio>`;
+                } else {
+                    contentHtml = `<div class="break-words message-text-content">${escapeHtml(msg.decryptedText || '[Criptografado]')}</div>`;
+                }
+
+                div.innerHTML = `
+                    <div class="rounded-lg px-3 py-2 text-sm shadow ${isMe ? 'bg-whatsapp-bubbleOut text-whatsapp-text rounded-tr-none' : 'bg-whatsapp-bubbleIn text-whatsapp-text rounded-tl-none'} relative">
+                        ${!isMe ? `<span class="block text-[11px] font-semibold text-emerald-400 mb-0.5">${getSenderDisplayName(msg.sender)}</span>` : ''}
+                        ${contentHtml}
+                        <div class="flex items-center justify-end gap-2 mt-1 text-[10px] text-whatsapp-subtext">
+                            <i class="fa-solid fa-lock text-[9px] text-whatsapp-green" title="E2EE Ativo"></i>
+                            <span title="Expira em 30 dias" class="text-amber-400 font-mono timer-display" data-timestamp="${msg.timestamp}"><i class="fa-solid fa-clock mr-0.5"></i>${timeStr}</span>
+                            <span>${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            ${isMe && msg.decryptedType === 'text' ? `<button onclick="window.editMessage('${msg.id}')" class="hover:text-whatsapp-green ml-1" title="Editar"><i class="fa-solid fa-pen text-[10px]"></i></button>` : ''}
+                            ${isMe ? `<button onclick="window.deleteMessage('${msg.id}')" class="hover:text-red-400 ml-1" title="Excluir Permanentemente"><i class="fa-solid fa-trash text-[10px]"></i></button>` : ''}
+                        </div>
+                    </div>
+                `;
+                messagesContainer.appendChild(div);
+            });
+        }
+
+        function updateMessageTimersDOM() {
+            const timerElements = document.querySelectorAll('.timer-display');
+            const now = new Date().getTime();
+
+            timerElements.forEach(el => {
+                const timestamp = el.getAttribute('data-timestamp');
+                if (!timestamp) return;
+                const msgTime = new Date(timestamp).getTime();
+                const diffMs = THIRTY_DAYS_MS - (now - msgTime);
+                if (diffMs <= 0) return;
+
+                const remainingSecs = Math.ceil(diffMs / 1000);
+                const remDays = Math.floor(remainingSecs / (3600 * 24));
+                const remHours = Math.floor((remainingSecs % (3600 * 24)) / 3600);
+                const remMins = Math.floor((remainingSecs % 3600) / 60);
+                const remSec = remainingSecs % 60;
+                
+                let timeStr = `${remDays}d ${remHours}h ${remMins}m ${remSec}s`;
+                if (remDays === 0) {
+                    timeStr = `${remHours}h ${remMins}m ${remSec}s`;
+                }
+                el.innerHTML = `<i class="fa-solid fa-clock mr-0.5"></i>${timeStr}`;
+            });
+        }
+
+        async function checkExpiredMessages() {
+            if (!currentChatId) return;
+            const now = new Date().getTime();
+            let updatedChatLastMsg = false;
+
+            for (const msg of messagesData) {
+                const msgTime = new Date(msg.timestamp).getTime();
+                if (now - msgTime > THIRTY_DAYS_MS) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msg.id)).catch(() => {});
+                    updatedChatLastMsg = true;
+                }
+            }
+
+            if (updatedChatLastMsg && messagesData.length > 0) {
+                const latest = messagesData[messagesData.length - 1];
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                    lastMessage: latest.decryptedText || 'E2EE Ativo',
+                    lastTime: new Date(latest.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }).catch(() => {});
+            }
+        }
+
+        window.deleteMessage = async (msgId) => {
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
+            const remaining = messagesData.filter(m => m.id !== msgId);
+            if (remaining.length > 0) {
+                const latest = remaining[remaining.length - 1];
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                    lastMessage: latest.decryptedText || 'E2EE Ativo',
+                    lastTime: new Date(latest.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }).catch(() => {});
+            } else {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                    lastMessage: 'E2EE Ativo',
+                    lastTime: ''
+                }).catch(() => {});
+            }
+        };
+
+        window.editMessage = async (msgId) => {
+            const msgObj = messagesData.find(m => m.id === msgId);
+            if (!msgObj || msgObj.decryptedType !== 'text') return;
+
+            showModalForm("Editar Mensagem", [{ id: 'new-text', label: 'Novo texto', value: msgObj.decryptedText }], async (vals) => {
+                const newText = vals['new-text'].trim();
+                if (!newText || newText.length > 450) {
+                    showCustomModal("Erro", "Texto inválido ou maior que 450 caracteres.");
+                    return;
+                }
+
+                const activeChat = chatsData.find(c => c.id === currentChatId);
+                let encryptedPayload = null;
+
+                if (!activeChat.isGroup) {
+                    const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
+                    const targetUserDoc = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === otherUsername.toLowerCase());
+                    
+                    if (targetUserDoc && targetUserDoc.publicKey && currentUser.privateKey) {
+                        const remotePub = await importPublicKey(targetUserDoc.publicKey);
+                        const sharedKey = await deriveSharedSecretKey(currentUser.privateKey, remotePub);
+                        encryptedPayload = await encryptMessage(newText, sharedKey);
+                    }
+                }
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
+                    text: activeChat.isGroup ? newText : "[E2EE Message]",
+                    encryptedPayload: encryptedPayload,
+                    encryptedPayloadForGroup: activeChat.isGroup ? newText : null
+                });
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
+                    lastMessage: newText
+                });
+            });
+        };
+
+        window.openImageModal = (imgSrc) => {
+            document.getElementById('modal-title').textContent = "Visualizar Imagem";
+            document.getElementById('modal-body').innerHTML = `<img src="${imgSrc}" class="w-full rounded-lg object-contain max-h-[70vh]">`;
+            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Fechar</button>`;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        };
 
         document.getElementById('active-chat-name-trigger').addEventListener('click', () => {
             const chat = chatsData.find(c => c.id === currentChatId);
@@ -772,31 +1338,24 @@
             if (chat.isGroup) {
                 const isCreator = (chat.creator || '').toLowerCase() === currentUser.username.toLowerCase();
                 if (!isCreator) {
-                    showCustomModal("Informações do Grupo", `Nome: ${chat.name}\nCriador: ${chat.creator}\nApenas o criador pode alterar o nome.`);
+                    showCustomModal("Grupo E2EE", `Nome: ${chat.name}\nCriador: ${chat.creator}`);
                     return;
                 }
-
-                showModalForm("Alterar Nome do Grupo", [
-                    { id: 'g-name', label: 'Novo Nome do Grupo', value: chat.name }
-                ], async (vals) => {
+                showModalForm("Alterar Nome do Grupo", [{ id: 'g-name', label: 'Novo Nome', value: chat.name }], async (vals) => {
                     const newName = vals['g-name'].trim();
                     if (!newName) return;
-
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), {
-                        name: newName
-                    });
-                    showCustomModal("Sucesso", "Nome do grupo atualizado!");
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), { name: newName });
+                    showCustomModal("Sucesso", "Nome atualizado!");
                 });
             } else {
                 const otherUsername = chat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
                 if (!otherUsername) return;
-                
                 const myUserLower = (currentUser.usernameLower || currentUser.username).toLowerCase();
                 const targetLower = otherUsername.toLowerCase();
                 const myBlockItem = blockedUsersData.find(b => (b.ownerUsername || '').toLowerCase() === myUserLower && (b.blockedUser || '').toLowerCase() === targetLower);
                 const isBlockedByMe = !!myBlockItem;
                 
-                showCustomModalWithOptions(otherUsername, isBlockedByMe ? "Desbloquear Contato" : "Bloquear Contato", isBlockedByMe ? "Você bloqueou este contato." : "Deseja bloquear este contato? Nenhum dos dois poderá enviar mensagens.", async () => {
+                showCustomModalWithOptions(otherUsername, isBlockedByMe ? "Desbloquear" : "Bloquear", isBlockedByMe ? "Contato bloqueado." : "Deseja bloquear contato?", async () => {
                     if (isBlockedByMe) {
                         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'blocked', myBlockItem.id));
                     } else {
@@ -812,72 +1371,35 @@
             }
         });
 
-        document.getElementById('active-chat-avatar').addEventListener('click', () => {
-            const chat = chatsData.find(c => c.id === currentChatId);
-            if (!chat || !chat.isGroup) {
-                showCustomModal("Aviso", "A foto só pode ser alterada diretamente em grupos por você.");
-                return;
-            }
-            const isCreator = (chat.creator || '').toLowerCase() === currentUser.username.toLowerCase();
-            if (!isCreator) {
-                showCustomModal("Aviso", "Apenas o criador pode alterar a foto do grupo.");
-                return;
-            }
-
-            openImageStoragePicker(async (base64Image) => {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), {
-                    avatar: base64Image
-                });
-                showCustomModal("Sucesso", "Foto do grupo atualizada com sucesso!");
-            });
-        });
-
         document.getElementById('my-avatar').addEventListener('click', () => {
-            openImageStoragePicker(async (base64Image) => {
-                currentUser.avatar = base64Image;
-                localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
-                
-                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower);
-                await updateDoc(userDocRef, { avatar: base64Image });
-
-                initDashboard();
-                showCustomModal("Sucesso", "Foto de perfil atualizada com sucesso!");
-            });
-        });
-
-        function openImageStoragePicker(onImageReady) {
             const fileInput = document.getElementById('hidden-file-input');
             fileInput.value = '';
+            fileInput.accept = 'image/*';
             fileInput.onchange = (e) => {
                 const file = e.target.files[0];
-                if (!file) return;
-                if (!file.type.startsWith('image/')) {
-                    showCustomModal("Erro", "Por favor, selecione um arquivo de imagem válido.");
-                    return;
-                }
+                if (!file || file.type.startsWith('video/') || file.size > 524288) return;
                 const reader = new FileReader();
-                reader.onload = (uploadEvent) => {
-                    onImageReady(uploadEvent.target.result);
+                reader.onload = async (uploadEvent) => {
+                    currentUser.avatar = uploadEvent.target.result;
+                    const sessionData = { uid: currentUser.uid, username: currentUser.username, usernameLower: currentUser.usernameLower, displayName: currentUser.displayName, avatar: currentUser.avatar };
+                    localStorage.setItem('cyberchat_user', JSON.stringify(sessionData));
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower), { avatar: currentUser.avatar });
+                    initDashboard();
+                    showCustomModal("Sucesso", "Foto atualizada!");
                 };
                 reader.readAsDataURL(file);
             };
             fileInput.click();
-        }
+        });
 
         function openMyNameModal() {
-            showModalForm("Alterar Seu Nome", [
-                { id: 'nick', label: 'Seu Nome Exibido', value: currentUser.displayName }
-            ], async (vals) => {
+            showModalForm("Alterar Nome", [{ id: 'nick', label: 'Nome Exibido', value: currentUser.displayName }], async (vals) => {
                 const newNick = vals['nick'].trim() || currentUser.username;
                 currentUser.displayName = newNick;
-                
-                localStorage.setItem('cyberchat_user', JSON.stringify(currentUser));
-                
-                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower);
-                await updateDoc(userDocRef, { displayName: newNick });
-
+                const sessionData = { uid: currentUser.uid, username: currentUser.username, usernameLower: currentUser.usernameLower, displayName: currentUser.displayName, avatar: currentUser.avatar };
+                localStorage.setItem('cyberchat_user', JSON.stringify(sessionData));
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.usernameLower), { displayName: newNick });
                 initDashboard();
-                showCustomModal("Sucesso", "Nome atualizado com sucesso!");
             });
         }
         document.getElementById('profile-name-trigger').addEventListener('click', openMyNameModal);
@@ -887,121 +1409,6 @@
             document.getElementById('chat-area').classList.add('hidden');
             currentChatId = null;
         });
-
-        const messagesContainer = document.getElementById('messages-container');
-        function renderMessages() {
-            messagesContainer.innerHTML = '';
-            messagesData.forEach(msg => {
-                const isMe = msg.sender.toLowerCase() === currentUser.username.toLowerCase();
-                const div = document.createElement('div');
-                div.className = `flex flex-col max-w-[75%] mb-2 ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'} relative group`;
-                
-                div.innerHTML = `
-                    <div class="rounded-lg px-3 py-2 text-sm shadow ${isMe ? 'bg-whatsapp-bubbleOut text-whatsapp-text rounded-tr-none' : 'bg-whatsapp-bubbleIn text-whatsapp-text rounded-tl-none'} relative">
-                        ${!isMe ? `<span class="block text-[11px] font-semibold text-emerald-400 mb-0.5">${getSenderDisplayName(msg.sender)}</span>` : ''}
-                        ${msg.forwarded ? '<span class="block text-[10px] text-whatsapp-subtext italic mb-0.5"><i class="fa-solid fa-share mr-1"></i>Encaminhada</span>' : ''}
-                        <div class="break-words message-text-content">${escapeHtml(msg.text)}</div>
-                        <div class="flex items-center justify-end gap-2 mt-1 text-[10px] text-whatsapp-subtext">
-                            ${msg.edited ? '<span class="italic">(editado)</span>' : ''}
-                            <span>${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                            <div class="inline-flex gap-1.5 ml-1 opacity-80 hover:opacity-100">
-                                <button title="Encaminhar" onclick="window.forwardMessage('${encodeURIComponent(msg.text)}')" class="hover:text-whatsapp-green"><i class="fa-solid fa-share text-[10px]"></i></button>
-                                ${isMe && !msg.forwarded ? `<button title="Editar" onclick="window.editMessage('${msg.id}', '${encodeURIComponent(msg.text)}')" class="hover:text-whatsapp-green"><i class="fa-solid fa-pen text-[10px]"></i></button>` : ''}
-                                ${isMe ? `<button title="Apagar para todos" onclick="window.deleteMessage('${msg.id}')" class="hover:text-red-400"><i class="fa-solid fa-trash text-[10px]"></i></button>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                messagesContainer.appendChild(div);
-            });
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        window.forwardMessage = (encodedText) => {
-            const textToForward = decodeURIComponent(encodedText);
-            if (chatsData.length === 0) {
-                showCustomModal("Aviso", "Nenhuma conversa disponível para encaminhar.");
-                return;
-            }
-            let html = `<div class="flex flex-col gap-1 max-h-60 overflow-y-auto">`;
-            chatsData.forEach(c => {
-                html += `<div onclick="window.confirmForward('${c.id}', '${encodeURIComponent(textToForward)}')" class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-whatsapp-panel transition"><img src="${getChatAvatar(c)}" class="w-10 h-10 rounded-full object-cover"><span class="text-sm text-whatsapp-text font-medium">${getChatDisplayName(c)}</span></div>`;
-            });
-            html += `</div>`;
-            document.getElementById('modal-title').textContent = "Encaminhar para...";
-            document.getElementById('modal-body').innerHTML = html;
-            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button>`;
-            document.getElementById('custom-modal').classList.remove('hidden');
-        };
-
-        window.confirmForward = async (targetChatId, encodedText) => {
-            const text = decodeURIComponent(encodedText);
-            const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
-                id: msgId,
-                chatId: targetChatId,
-                sender: currentUser.username,
-                text,
-                forwarded: true,
-                timestamp: new Date().toISOString()
-            });
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', targetChatId), {
-                lastMessage: `${currentUser.displayName}: ${text}`,
-                lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-            closeModal();
-            showCustomModal("Sucesso", "Mensagem encaminhada com sucesso!");
-        };
-
-        window.editMessage = (msgId, encodedText) => {
-            const currentText = decodeURIComponent(encodedText);
-            showModalForm("Editar Mensagem", [
-                { id: 'new-text', label: 'Nova mensagem', value: currentText }
-            ], async (vals) => {
-                const updatedText = vals['new-text'].trim();
-                if (!updatedText) return;
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
-                    text: updatedText,
-                    edited: true
-                });
-            });
-        };
-
-        window.deleteMessage = async (msgId) => {
-            showModalConfirmAction("Apagar Mensagem", "Tem certeza que deseja apagar esta mensagem para todos?", async () => {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
-                closeModal();
-            });
-        };
-
-        async function sendMessage() {
-            const input = document.getElementById('message-input');
-            if (!input) return;
-            const text = input.value.trim();
-            if (!text || !currentChatId) return;
-
-            const activeChat = chatsData.find(c => c.id === currentChatId);
-            if (!activeChat.isGroup) {
-                const otherUsername = activeChat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
-                if (otherUsername && (isUserBlocked(otherUsername) || !canSendMessageTo(otherUsername))) return;
-            }
-
-            input.value = '';
-            const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
-            const msg = {
-                id: msgId,
-                chatId: currentChatId,
-                sender: currentUser.username,
-                text,
-                timestamp: new Date().toISOString()
-            };
-
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), msg);
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                lastMessage: `${currentUser.displayName}: ${text}`,
-                lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-        }
 
         function escapeHtml(str) {
             return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
@@ -1020,14 +1427,6 @@
             document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="modal-action-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">${buttonText}</button>`;
             document.getElementById('custom-modal').classList.remove('hidden');
             document.getElementById('modal-action-btn').onclick = onAction;
-        }
-
-        function showModalConfirmAction(title, text, onConfirm) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-body').innerHTML = `<p class="text-sm text-whatsapp-subtext">${text}</p>`;
-            document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="modal-action-confirm" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Apagar</button>`;
-            document.getElementById('custom-modal').classList.remove('hidden');
-            document.getElementById('modal-action-confirm').onclick = onConfirm;
         }
 
         function showModalForm(title, fields, onSubmit) {
