@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberChat</title>
+    <title>CyberChat E2EE</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for icons -->
@@ -65,10 +65,10 @@
         <div id="auth-view" class="absolute inset-0 flex items-center justify-center bg-whatsapp-darker p-4 overflow-y-auto z-20">
             <div class="bg-whatsapp-dark w-full max-w-md p-6 sm:p-8 rounded-xl shadow-2xl border border-whatsapp-border flex flex-col items-center my-auto">
                 <div class="w-16 h-16 bg-whatsapp-green rounded-full flex items-center justify-center text-3xl text-white mb-4 shadow-lg">
-                    <i class="fa-solid fa-lock"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-whatsapp-text mb-1">CyberChat</h1>
-                <p class="text-whatsapp-subtext text-xs mb-6 text-center">Criptografado E2EE Extremo.</p>
+                <h1 class="text-2xl font-bold text-whatsapp-text mb-1">CyberChat E2EE</h1>
+                <p class="text-whatsapp-subtext text-xs mb-6 text-center">Comunicação segura com Criptografia de Ponta a Ponta.</p>
                 
                 <div class="flex w-full bg-whatsapp-inputBg rounded-lg p-1 mb-6 border border-whatsapp-border">
                     <button id="auth-tab-login" type="button" class="flex-1 py-2 text-xs font-semibold rounded-md bg-whatsapp-green text-white transition">Entrar</button>
@@ -78,11 +78,11 @@
                 <form id="auth-form" class="w-full flex flex-col gap-4">
                     <div>
                         <label class="block text-xs font-medium text-whatsapp-subtext mb-1">Nome de Usuário (Permitido A-Z, 0-9 e _)</label>
-                        <input type="text" id="username-input" required placeholder="ex: maracana_32zz" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
+                        <input type="text" id="username-input" required placeholder="nome de usuário" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
                         <span id="username-error" class="text-red-400 text-xs mt-1.5 hidden block"></span>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-whatsapp-subtext mb-1">Senha</label>
+                        <label class="block text-xs font-medium text-whatsapp-subtext mb-1">Senha (Usada para gerar sua chave privada)</label>
                         <input type="password" id="password-input" required placeholder="Sua senha" class="w-full bg-whatsapp-inputBg border border-whatsapp-border rounded-lg px-4 py-2.5 text-sm text-whatsapp-text focus:outline-none focus:border-whatsapp-green">
                     </div>
                     <button type="submit" id="auth-submit-btn" class="w-full bg-whatsapp-green hover:bg-emerald-600 text-white font-semibold py-2.5 rounded-lg transition duration-200 mt-2 shadow flex items-center justify-center gap-2">
@@ -141,8 +141,8 @@
                     <div class="w-48 h-48 opacity-40 mb-6 flex items-center justify-center text-7xl text-whatsapp-subtext">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <h2 class="text-2xl font-light text-whatsapp-text mb-2">CyberChat Web E2EE</h2>
-                    <p class="text-sm text-whatsapp-subtext max-w-md">Suas mensagens, fotos, áudios e grupos são 100% protegidos por criptografia de ponta a ponta irrestrita.</p>
+                    <h2 class="text-2xl font-light text-whatsapp-text mb-2">CyberChat E2EE Web</h2>
+                    <p class="text-sm text-whatsapp-subtext max-w-md">Mensagens protegidas por Criptografia de Ponta a Ponta.</p>
                 </div>
 
                 <div id="active-chat" class="flex-1 flex flex-col h-full hidden min-w-0">
@@ -153,7 +153,9 @@
                             <div id="active-chat-name-trigger" class="flex items-center gap-3 cursor-pointer min-w-0 group flex-1" title="Opções">
                                 <div class="min-w-0">
                                     <h3 id="active-chat-name" class="font-medium text-sm text-whatsapp-text truncate group-hover:underline">Nome</h3>
-                                    <span id="active-chat-status" class="text-xs text-whatsapp-subtext block truncate"><i class="fa-solid fa-lock text-[10px] text-whatsapp-green mr-1"></i>E2EE Ativo</span>
+                                    <span id="active-chat-status" class="text-xs text-whatsapp-subtext block truncate flex items-center gap-1">
+                                        <i class="fa-solid fa-lock text-[10px] text-whatsapp-green"></i> Criptografado de ponta a ponta
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -163,28 +165,7 @@
 
                     <!-- Input Footer -->
                     <div id="chat-input-footer" class="bg-whatsapp-panel px-4 py-3 flex items-center gap-3 border-t border-whatsapp-border relative">
-                        <!-- Box de Resposta (Injetado acima do input) -->
-                        <div id="reply-preview-container" class="hidden absolute bottom-full left-0 right-0 bg-whatsapp-panel border-t border-b border-whatsapp-border px-4 py-2 flex items-center justify-between z-10">
-                            <div class="flex-1 bg-whatsapp-inputBg border-l-4 border-whatsapp-green rounded p-2 text-xs mr-3 truncate shadow-sm">
-                                <span id="reply-preview-sender" class="font-bold text-whatsapp-green block mb-0.5"></span>
-                                <span id="reply-preview-text" class="text-whatsapp-subtext"></span>
-                            </div>
-                            <button onclick="window.cancelReply()" class="text-whatsapp-subtext hover:text-red-400 transition text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-
-                        <button id="btn-send-photo" title="Enviar Foto (Máx 500KB)" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
-                            <i class="fa-solid fa-camera"></i>
-                        </button>
-                        <button id="btn-send-audio" title="Gravar Áudio (Máx 60s)" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
-                            <i class="fa-solid fa-microphone"></i>
-                        </button>
-                        <div class="flex-1 relative flex items-center">
-                            <input type="text" id="message-input" maxlength="450" placeholder="Digite uma mensagem (máx 450 caracteres)..." class="w-full bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green pr-14">
-                            <span id="char-counter" class="absolute right-3 text-[10px] text-whatsapp-subtext">0/450</span>
-                        </div>
-                        <button id="btn-send-message" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
+                        <!-- Conteúdo injetado via JS -->
                     </div>
                 </div>
             </div>
@@ -240,18 +221,140 @@
         let blockedUsersData = [];
         let messagesData = [];
         let usersDirectory = [];
-        let groupKeysCache = {}; 
         let unsubscribeMessages = null;
-        let activeReply = null; // Guarda a mensagem que está sendo respondida
+        let activeReply = null; 
         let mediaRecorder = null;
         let audioChunks = [];
         let isRecording = false;
         let recordingTimeout = null;
         let realtimeTimerInterval = null;
 
+        let userKeyPair = null; // Chaves criptográficas E2EE do usuário atual
         const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
-        // --- SISTEMA DE PRESENÇA (ONLINE/OFFLINE) ---
+        // --- FUNÇÕES CRIPTOGRÁFICAS E2EE (Web Crypto API) ---
+        async function deriveKeyFromPassword(password, username) {
+            const enc = new TextEncoder();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                "raw",
+                enc.encode(password + username),
+                { name: "PBKDF2" },
+                false,
+                ["deriveKey"]
+            );
+            return window.crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: enc.encode("cyberchat_secure_salt_" + username),
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                keyMaterial,
+                { name: "AES-GCM", length: 256 },
+                true,
+                ["encrypt", "decrypt"]
+            );
+        }
+
+        async function generateOrLoadKeyPair(password, username) {
+            try {
+                // Tenta carregar chaves salvas localmente
+                const savedPrivateJwk = localStorage.getItem(`cyberchat_priv_${username}`);
+                const savedPublicJwk = localStorage.getItem(`cyberchat_pub_${username}`);
+
+                if (savedPrivateJwk && savedPublicJwk) {
+                    const privateKey = await window.crypto.subtle.importKey(
+                        "jwk",
+                        JSON.parse(savedPrivateJwk),
+                        { name: "ECDH", namedCurve: "P-256" },
+                        true,
+                        ["deriveKey", "deriveBits"]
+                    );
+                    const publicKey = await window.crypto.subtle.importKey(
+                        "jwk",
+                        JSON.parse(savedPublicJwk),
+                        { name: "ECDH", namedCurve: "P-256" },
+                        true,
+                        []
+                    );
+                    return { privateKey, publicKey };
+                }
+            } catch (e) {
+                console.warn("Gerando novo par de chaves E2EE...");
+            }
+
+            // Gera novo par ECDH
+            const keyPair = await window.crypto.subtle.generateKey(
+                { name: "ECDH", namedCurve: "P-256" },
+                true,
+                ["deriveKey", "deriveBits"]
+            );
+
+            const exportedPriv = await window.crypto.subtle.exportKey("jwk", keyPair.privateKey);
+            const exportedPub = await window.crypto.subtle.exportKey("jwk", keyPair.publicKey);
+
+            localStorage.setItem(`cyberchat_priv_${username}`, JSON.stringify(exportedPriv));
+            localStorage.setItem(`cyberchat_pub_${username}`, JSON.stringify(exportedPub));
+
+            return keyPair;
+        }
+
+        async function getSharedAESKey(remotePublicKeyJwk) {
+            if (!remotePublicKeyJwk || !userKeyPair) return null;
+            try {
+                const remotePub = await window.crypto.subtle.importKey(
+                    "jwk",
+                    remotePublicKeyJwk,
+                    { name: "ECDH", namedCurve: "P-256" },
+                    true,
+                    []
+                );
+                return await window.crypto.subtle.deriveKey(
+                    { name: "ECDH", public: remotePub },
+                    userKeyPair.privateKey,
+                    { name: "AES-GCM", length: 256 },
+                    false,
+                    ["encrypt", "decrypt"]
+                );
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function encryptMessageText(text, recipientPublicKeyJwk) {
+            try {
+                const aesKey = await getSharedAESKey(recipientPublicKeyJwk);
+                if (!aesKey) return text; // Fallback se chave falhar
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(text);
+                const cipher = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, encoded);
+                
+                return {
+                    iv: Array.from(iv),
+                    data: Array.from(new Uint8Array(cipher))
+                };
+            } catch (e) {
+                return text;
+            }
+        }
+
+        async function decryptMessageText(encryptedObj, senderPublicKeyJwk) {
+            if (!encryptedObj || typeof encryptedObj !== 'object' || !encryptedObj.iv) {
+                return typeof encryptedObj === 'string' ? encryptedObj : '[Mensagem malformada]';
+            }
+            try {
+                const aesKey = await getSharedAESKey(senderPublicKeyJwk);
+                if (!aesKey) return '[Erro de chave E2EE]';
+                const iv = new Uint8Array(encryptedObj.iv);
+                const data = new Uint8Array(encryptedObj.data);
+                const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv }, aesKey, data);
+                return new TextDecoder().decode(decrypted);
+            } catch (e) {
+                return '[Mensagem Criptografada / Não Decifrável]';
+            }
+        }
+
+        // --- SISTEMA DE PRESENÇA ---
         let presenceTimeout = null;
         window.updateOnlineStatus = (isOnline) => {
             if (!currentUser) return;
@@ -269,76 +372,6 @@
         window.addEventListener('beforeunload', () => {
             if (currentUser) window.updateOnlineStatus(false);
         });
-
-        // --- SISTEMA CRIPTOGRÁFICO AVANÇADO E2EE ---
-        async function exportPublicKey(key) {
-            return await window.crypto.subtle.exportKey("jwk", key);
-        }
-
-        async function importPublicKey(jwk) {
-            return await window.crypto.subtle.importKey("jwk", jwk, { name: "ECDH", namedCurve: "P-256" }, true, []);
-        }
-
-        async function generateKeyPair() {
-            return await window.crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveKey", "deriveBits"]);
-        }
-
-        async function generateAESKey() {
-            return await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-        }
-
-        async function deriveSharedSecretKey(privateKey, remotePublicKey) {
-            return await window.crypto.subtle.deriveKey(
-                { name: "ECDH", public: remotePublicKey },
-                privateKey,
-                { name: "AES-GCM", length: 256 },
-                true,
-                ["encrypt", "decrypt"]
-            );
-        }
-
-        async function encryptMessage(text, aesKey) {
-            const iv = window.crypto.getRandomValues(new Uint8Array(12));
-            const encoded = new TextEncoder().encode(text);
-            const ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, encoded);
-
-            let ivBinary = '';
-            for (let i = 0; i < iv.length; i++) ivBinary += String.fromCharCode(iv[i]);
-
-            const cipherBytes = new Uint8Array(ciphertext);
-            let cipherBinary = '';
-            const chunkSize = 8192;
-            for (let i = 0; i < cipherBytes.length; i += chunkSize) {
-                cipherBinary += String.fromCharCode(...cipherBytes.subarray(i, i + chunkSize));
-            }
-
-            return { iv: btoa(ivBinary), data: btoa(cipherBinary) };
-        }
-
-        async function decryptMessage(encryptedObj, aesKey) {
-            try {
-                const iv = Uint8Array.from(atob(encryptedObj.iv), c => c.charCodeAt(0));
-                const data = Uint8Array.from(atob(encryptedObj.data), c => c.charCodeAt(0));
-                const decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, aesKey, data);
-                return new TextDecoder().decode(decrypted);
-            } catch (err) {
-                return "[Erro E2EE]";
-            }
-        }
-
-        async function savePrivateKeyToStorage(username, privateKey) {
-            const jwk = await window.crypto.subtle.exportKey("jwk", privateKey);
-            localStorage.setItem(`cyberchat_priv_${username.toLowerCase()}`, JSON.stringify(jwk));
-        }
-
-        async function loadPrivateKeyFromStorage(username) {
-            const jwkStr = localStorage.getItem(`cyberchat_priv_${username.toLowerCase()}`);
-            if (!jwkStr) return null;
-            const jwk = JSON.parse(jwkStr);
-            return await window.crypto.subtle.importKey(
-                "jwk", jwk, { name: "ECDH", namedCurve: "P-256" }, true, ["deriveKey", "deriveBits"]
-            );
-        }
 
         async function ensureAuth() {
             if (!auth) return null;
@@ -362,7 +395,7 @@
         }
 
         function getChatDisplayName(chat) {
-            if (chat.isGroup) return chat.decryptedName || chat.name;
+            if (chat.isGroup) return chat.name;
             if (!chat.participants) return 'Conversa';
             const myUser = (currentUser.usernameLower || currentUser.username || '').toLowerCase();
             const otherUsername = chat.participants.find(p => p.toLowerCase() !== myUser);
@@ -385,6 +418,12 @@
             if (username.toLowerCase() === currentUser.username.toLowerCase()) return currentUser.displayName || currentUser.username;
             const matchedUser = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === username.toLowerCase());
             return matchedUser && matchedUser.displayName ? matchedUser.displayName : username;
+        }
+
+        function getUserPublicKey(username) {
+            if (!username) return null;
+            const matched = usersDirectory.find(u => (u.usernameLower || u.username || '').toLowerCase() === username.toLowerCase());
+            return matched ? matched.publicKey : null;
         }
 
         function isUserBlocked(username) {
@@ -416,7 +455,8 @@
             const savedUser = localStorage.getItem('cyberchat_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
-                currentUser.privateKey = await loadPrivateKeyFromStorage(currentUser.username);
+                // Restaura par de chaves silenciosamente se houver senha guardada ou gerencia
+                userKeyPair = await generateOrLoadKeyPair(currentUser.username, currentUser.usernameLower);
                 document.getElementById('auth-view').classList.add('hidden');
                 document.getElementById('main-view').classList.remove('hidden');
                 initDashboard();
@@ -464,6 +504,9 @@
                 const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', usernameLower);
                 const userDocSnap = await getDoc(userDocRef);
 
+                userKeyPair = await generateOrLoadKeyPair(passwordInput, usernameLower);
+                const pubJwk = await window.crypto.subtle.exportKey("jwk", userKeyPair.publicKey);
+
                 let isNew = false;
                 if (authMode === 'login') {
                     if (!userDocSnap.exists()) {
@@ -478,23 +521,16 @@
                         return;
                     }
                     
-                    let privKey = await loadPrivateKeyFromStorage(usernameInput);
-                    if (!privKey) {
-                        const keyPair = await generateKeyPair();
-                        privKey = keyPair.privateKey;
-                        await savePrivateKeyToStorage(usernameInput, privKey);
-                        const pubJwk = await exportPublicKey(keyPair.publicKey);
-                        await updateDoc(userDocRef, { publicKey: pubJwk });
-                    }
-
                     currentUser = { 
                         uid: data.uid || usernameLower, 
                         username: data.username || usernameInput, 
                         usernameLower, 
                         displayName: data.displayName || usernameInput, 
-                        avatar: data.avatar,
-                        privateKey: privKey 
+                        avatar: data.avatar
                     };
+
+                    // Atualiza chave pública caso tenha mudado
+                    await updateDoc(userDocRef, { publicKey: pubJwk }).catch(()=>{});
                 } else {
                     if (userDocSnap.exists()) {
                         usernameError.textContent = 'Usuário já existe!';
@@ -503,24 +539,18 @@
                     }
                     isNew = true;
                     
-                    const keyPair = await generateKeyPair();
-                    const pubJwk = await exportPublicKey(keyPair.publicKey);
-                    await savePrivateKeyToStorage(usernameInput, keyPair.privateKey);
-
                     currentUser = { 
                         uid: firebaseAuthUser.uid, 
                         username: usernameInput, 
                         usernameLower, 
                         displayName: usernameInput, 
-                        avatar: `https://placehold.co/100x100/00a884/e9edef?text=${usernameInput.charAt(0).toUpperCase()}`,
-                        privateKey: keyPair.privateKey
+                        avatar: `https://placehold.co/100x100/00a884/e9edef?text=${usernameInput.charAt(0).toUpperCase()}`
                     };
 
                     await setDoc(userDocRef, { 
                         ...currentUser, 
-                        privateKey: null,
-                        publicKey: pubJwk, 
                         password: passwordInput, 
+                        publicKey: pubJwk,
                         createdAt: new Date().toISOString() 
                     });
                 }
@@ -543,7 +573,6 @@
             document.getElementById('my-phone-display').textContent = `@${currentUser.username}`;
             loadDirectoryAndData();
             
-            // Força online com delay de 5 segundos
             if (presenceTimeout) clearTimeout(presenceTimeout);
             presenceTimeout = setTimeout(() => { window.updateOnlineStatus(true); }, 5000);
 
@@ -552,42 +581,6 @@
                 checkExpiredMessages();
                 updateMessageTimersDOM();
             }, 1000);
-        }
-
-        async function getChatDecryptionKey(chat) {
-            if (chat.isGroup) {
-                if (groupKeysCache[chat.id]) return groupKeysCache[chat.id];
-                if (chat.encryptedKeys && chat.encryptedKeys[currentUser.username]) {
-                    const creatorDoc = usersDirectory.find(u => u.usernameLower === chat.creator.toLowerCase());
-                    if (creatorDoc && creatorDoc.publicKey && currentUser.privateKey) {
-                        try {
-                            const creatorPub = await importPublicKey(creatorDoc.publicKey);
-                            const shared = await deriveSharedSecretKey(currentUser.privateKey, creatorPub);
-                            const decStr = await decryptMessage(chat.encryptedKeys[currentUser.username], shared);
-                            if (decStr && !decStr.startsWith("[Erro")) {
-                                const rawArray = Uint8Array.from(atob(decStr), c => c.charCodeAt(0));
-                                const key = await window.crypto.subtle.importKey(
-                                    "raw", rawArray, { name: "AES-GCM" }, true, ["encrypt", "decrypt"]
-                                );
-                                groupKeysCache[chat.id] = key;
-                                return key;
-                            }
-                        } catch(e) {}
-                    }
-                }
-            } else {
-                const other = chat.participants.find(p => p.toLowerCase() !== currentUser.usernameLower);
-                if (other && currentUser.privateKey) {
-                    const targetDoc = usersDirectory.find(u => u.usernameLower === other.toLowerCase());
-                    if (targetDoc && targetDoc.publicKey) {
-                        try {
-                            const remotePub = await importPublicKey(targetDoc.publicKey);
-                            return await deriveSharedSecretKey(currentUser.privateKey, remotePub);
-                        } catch(e) {}
-                    }
-                }
-            }
-            return null;
         }
 
         async function loadDirectoryAndData() {
@@ -645,27 +638,6 @@
                 });
 
                 for (let chat of rawChats) {
-                    chat.decryptedName = chat.name;
-                    chat.decryptedLastMessage = "Sem mensagens legíveis (E2EE)";
-
-                    const aesKey = await getChatDecryptionKey(chat);
-                    if (aesKey) {
-                        if (chat.isGroup && chat.encryptedName) {
-                            const decName = await decryptMessage(chat.encryptedName, aesKey);
-                            if (!decName.startsWith("[Erro")) chat.decryptedName = decName;
-                        }
-                        if (chat.encryptedLastMessage) {
-                            const decLast = await decryptMessage(chat.encryptedLastMessage, aesKey);
-                            if (!decLast.startsWith("[Erro")) {
-                                try {
-                                    const parsed = JSON.parse(decLast);
-                                    chat.decryptedLastMessage = parsed.text !== undefined ? parsed.text : decLast;
-                                } catch(e) { chat.decryptedLastMessage = decLast; }
-                            }
-                        }
-                    }
-
-                    // Se a conversa atual estiver aberta, limpa as contagens de não lidas instantaneamente
                     if (currentChatId === chat.id && chat.unreadCounts && chat.unreadCounts[currentUser.username] > 0) {
                         const newUnread = { ...chat.unreadCounts };
                         newUnread[currentUser.username] = 0;
@@ -738,7 +710,7 @@
                                 <span class="text-[10px] ${unreadCount > 0 ? 'text-whatsapp-green font-bold' : 'text-whatsapp-subtext'} shrink-0 ml-1">${chat.lastTime || ''}</span>
                             </div>
                             <div class="flex justify-between items-center mt-0.5">
-                                <p class="text-xs text-whatsapp-subtext truncate flex-1 min-w-0"><i class="fa-solid fa-lock text-[9px] mr-1"></i>${chat.decryptedLastMessage || chat.lastMessage}</p>
+                                <p class="text-xs text-whatsapp-subtext truncate flex-1 min-w-0">${chat.lastMessage || 'Sem mensagens'}</p>
                                 ${unreadBadge}
                             </div>
                         </div>
@@ -878,7 +850,7 @@
                     name: contact.name, 
                     isGroup: false, 
                     participants: [currentUser.username, contact.name], 
-                    lastMessage: '[Iniciando E2EE]', 
+                    lastMessage: '🔒 Conversa criptografada', 
                     lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     unreadCounts: {}
                 };
@@ -899,7 +871,7 @@
                 html += `<label class="flex items-center gap-2 text-sm text-whatsapp-text"><input type="checkbox" name="g-member" value="${c.name}"> ${c.name}</label>`;
             });
             html += `</div></div>`;
-            document.getElementById('modal-title').textContent = "Criar Grupo E2EE Extremo";
+            document.getElementById('modal-title').textContent = "Criar Grupo";
             document.getElementById('modal-body').innerHTML = html;
             document.getElementById('modal-footer').innerHTML = `<button onclick="closeModal()" class="bg-whatsapp-inputBg text-whatsapp-text px-4 py-2 rounded-lg text-sm">Cancelar</button><button id="confirm-group" class="bg-whatsapp-green text-white px-4 py-2 rounded-lg text-sm">Criar</button>`;
             document.getElementById('custom-modal').classList.remove('hidden');
@@ -912,35 +884,14 @@
                 checks.forEach(ch => participants.push(ch.value));
                 const chatId = 'group_' + Math.random().toString(36).substring(2, 10);
                 
-                const groupKey = await generateAESKey();
-                const rawGroupKey = await window.crypto.subtle.exportKey("raw", groupKey);
-                const groupKeyB64 = btoa(String.fromCharCode(...new Uint8Array(rawGroupKey)));
-                
-                const encryptedKeys = {};
-                for (const p of participants) {
-                    const pDoc = usersDirectory.find(u => (u.usernameLower || u.username).toLowerCase() === p.toLowerCase());
-                    if (pDoc && pDoc.publicKey) {
-                        const pPub = await importPublicKey(pDoc.publicKey);
-                        const shared = await deriveSharedSecretKey(currentUser.privateKey, pPub);
-                        encryptedKeys[p] = await encryptMessage(groupKeyB64, shared);
-                    }
-                }
-                
-                const encryptedName = await encryptMessage(gName, groupKey);
-                const payloadObj = { text: "Grupo criado" };
-                const encryptedCreationMsg = await encryptMessage(JSON.stringify(payloadObj), groupKey);
-                
                 const group = { 
                     id: chatId, 
-                    name: "[Grupo E2EE]", 
-                    encryptedName: encryptedName,
-                    encryptedKeys: encryptedKeys,
+                    name: gName, 
                     isGroup: true, 
                     participants, 
                     creator: currentUser.username, 
                     avatar: `https://placehold.co/100x100/202c33/e9edef?text=*`,
-                    lastMessage: "[Conteúdo Oculto E2EE]", 
-                    encryptedLastMessage: encryptedCreationMsg,
+                    lastMessage: "🔒 Grupo criptografado", 
                     lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     unreadCounts: {}
                 };
@@ -955,27 +906,25 @@
 
         async function openChat(chat) {
             currentChatId = chat.id;
-            window.cancelReply(); // Reseta a resposta ao trocar de chat
+            window.cancelReply(); 
             document.getElementById('no-chat-selected').classList.add('hidden');
             document.getElementById('active-chat').classList.remove('hidden');
             document.getElementById('active-chat-name').textContent = getChatDisplayName(chat);
             document.getElementById('active-chat-avatar').src = getChatAvatar(chat);
             
-            // Limpa Badge
             if (chat.unreadCounts && chat.unreadCounts[currentUser.username] > 0) {
                 const newUnread = { ...chat.unreadCounts };
                 newUnread[currentUser.username] = 0;
                 updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), { unreadCounts: newUnread }).catch(()=>{});
             }
 
-            // Status Online
             if (window.unsubscribeActiveUser) { window.unsubscribeActiveUser(); window.unsubscribeActiveUser = null; }
 
             if (chat.isGroup) {
-                document.getElementById('active-chat-status').textContent = `Grupo E2EE Extremo • ${chat.participants.length} membros`;
+                document.getElementById('active-chat-status').innerHTML = `<i class="fa-solid fa-lock text-[10px] text-whatsapp-green"></i> Grupo • ${chat.participants.length} membros (E2EE)`;
                 updateChatInputState(null);
             } else {
-                document.getElementById('active-chat-status').innerHTML = '<i class="fa-solid fa-lock text-[10px] text-whatsapp-green mr-1"></i>E2EE Ativo';
+                document.getElementById('active-chat-status').innerHTML = `<i class="fa-solid fa-lock text-[10px] text-whatsapp-green"></i> Conectado (E2EE)`;
                 const otherUsername = chat.participants.find(p => p.toLowerCase() !== currentUser.usernameLower);
                 
                 if (otherUsername) {
@@ -985,9 +934,9 @@
                             const data = snap.data();
                             const statusEl = document.getElementById('active-chat-status');
                             if (data.isOnline) {
-                                statusEl.innerHTML = '<i class="fa-solid fa-lock text-[10px] text-whatsapp-green mr-1"></i>E2EE Ativo • <span class="text-emerald-400 font-semibold">Online</span>';
+                                statusEl.innerHTML = `<i class="fa-solid fa-lock text-[10px] text-whatsapp-green"></i> <span class="text-emerald-400 font-semibold">Online</span> (E2EE)`;
                             } else {
-                                statusEl.innerHTML = '<i class="fa-solid fa-lock text-[10px] text-whatsapp-green mr-1"></i>E2EE Ativo';
+                                statusEl.innerHTML = `<i class="fa-solid fa-lock text-[10px] text-whatsapp-green"></i> Offline (E2EE)`;
                             }
                         }
                     });
@@ -1017,51 +966,11 @@
                     }
                 });
                 rawMsgs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-                const currentMsgIds = messagesData.map(m => m.id).join(',');
-                const newMsgIds = rawMsgs.map(m => m.id).join(',');
-                
-                const activeChatObj = chatsData.find(c => c.id === currentChatId);
-                const activeEncryptionKey = activeChatObj ? await getChatDecryptionKey(activeChatObj) : null;
-
-                messagesData = [];
-                for (const msg of rawMsgs) {
-                    let decryptedText = "[Não foi possível ler]";
-                    let decryptedMedia = null;
-                    let decryptedType = msg.type || 'text';
-                    let decryptedReply = null;
-
-                    if (msg.encryptedPayload && activeEncryptionKey) {
-                        try {
-                            const dec = await decryptMessage(msg.encryptedPayload, activeEncryptionKey);
-                            try {
-                                const parsed = JSON.parse(dec);
-                                if (parsed.text !== undefined) {
-                                    decryptedText = parsed.text;
-                                    decryptedReply = parsed.replyTo;
-                                } else {
-                                    decryptedText = dec;
-                                }
-                            } catch(e) {
-                                decryptedText = dec;
-                            }
-                            if (msg.encryptedMediaPayload) {
-                                decryptedMedia = await decryptMessage(msg.encryptedMediaPayload, activeEncryptionKey);
-                            }
-                        } catch (e) {
-                            decryptedText = "[Erro ao descriptografar E2EE]";
-                        }
-                    }
-                    messagesData.push({ ...msg, decryptedText, decryptedMedia, decryptedType, decryptedReply });
-                }
-
-                if (currentMsgIds !== newMsgIds) {
-                    renderMessages();
-                }
+                messagesData = rawMsgs;
+                renderMessages();
             });
         }
 
-        // Duplo Clique para Responder
         window.prepareReply = (msgId, sender, text) => {
             activeReply = { id: msgId, sender, text };
             document.getElementById('reply-preview-sender').textContent = getSenderDisplayName(sender);
@@ -1073,10 +982,10 @@
 
         window.cancelReply = () => {
             activeReply = null;
-            document.getElementById('reply-preview-container').classList.add('hidden');
+            document.getElementById('reply-preview-container')?.classList.add('hidden');
         };
 
-        document.getElementById('messages-container').addEventListener('dblclick', (e) => {
+        document.getElementById('messages-container').addEventListener('dblclick', async (e) => {
             const bubble = e.target.closest('.message-bubble');
             if (bubble) {
                 const wrapper = bubble.closest('[data-msg-id]');
@@ -1084,9 +993,12 @@
                     const msgId = wrapper.getAttribute('data-msg-id');
                     const msgObj = messagesData.find(m => m.id === msgId);
                     if (msgObj) {
-                        let textToReply = msgObj.decryptedText;
-                        if (msgObj.decryptedType === 'photo') textToReply = '📷 Foto';
-                        if (msgObj.decryptedType === 'audio') textToReply = '🎤 Áudio';
+                        let textToReply = msgObj.text;
+                        const decryptionKeyPub = await getRecipientPublicKeyForActiveChat();
+                        const decrypted = await decryptMessageText(msgObj.encryptedPayload || msgObj.text, decryptionKeyPub);
+                        if (msgObj.type === 'photo') textToReply = '📷 Foto';
+                        else if (msgObj.type === 'audio') textToReply = '🎤 Áudio';
+                        else textToReply = decrypted;
                         window.prepareReply(msgObj.id, msgObj.sender, textToReply);
                     }
                 }
@@ -1096,7 +1008,6 @@
         function updateChatInputState(otherUsername) {
             const footer = document.getElementById('chat-input-footer');
             if (otherUsername && isUserBlocked(otherUsername)) {
-                // Remove the input fields but keep the footer style
                 footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Conversa bloqueada.</div>`;
             } else if (otherUsername && !canSendMessageTo(otherUsername)) {
                 footer.innerHTML = `<div class="w-full text-center text-whatsapp-subtext text-sm py-2">Você precisa seguir o usuário para mandar mensagens.</div>`;
@@ -1116,7 +1027,7 @@
                         <i class="fa-solid fa-microphone"></i>
                     </button>
                     <div class="flex-1 relative flex items-center">
-                        <input type="text" id="message-input" maxlength="450" placeholder="Digite uma mensagem (máx 450 caracteres)..." class="w-full bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green pr-14">
+                        <input type="text" id="message-input" maxlength="450" placeholder="Digite uma mensagem criptografada..." class="w-full bg-whatsapp-inputBg text-whatsapp-text rounded-lg px-4 py-2.5 text-sm focus:outline-none border border-whatsapp-border focus:border-whatsapp-green pr-14">
                         <span id="char-counter" class="absolute right-3 text-[10px] text-whatsapp-subtext">0/450</span>
                     </div>
                     <button id="btn-send-message" class="text-whatsapp-subtext text-xl hover:text-whatsapp-green transition">
@@ -1124,7 +1035,6 @@
                     </button>
                 `;
                 setupInputEvents();
-                // Restore preview if replying
                 if (activeReply) {
                     window.prepareReply(activeReply.id, activeReply.sender, activeReply.text);
                 }
@@ -1173,7 +1083,7 @@
                     return;
                 }
 
-                if (file.size > 524288) { // 500KB
+                if (file.size > 524288) {
                     showCustomModal("Erro", "A foto excede 500KB!");
                     return;
                 }
@@ -1195,7 +1105,7 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                        sendMediaMessage(compressedDataUrl, 'photo', '📷 [Foto E2EE]');
+                        sendMediaMessage(compressedDataUrl, 'photo', '📷 Foto criptografada');
                     };
                     img.src = uploadEvent.target.result;
                 };
@@ -1220,7 +1130,7 @@
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                         const reader = new FileReader();
                         reader.onload = async (e) => {
-                            await sendMediaMessage(e.target.result, 'audio', '🎤 [Áudio E2EE]');
+                            await sendMediaMessage(e.target.result, 'audio', '🎤 Áudio criptografado');
                         };
                         reader.readAsDataURL(audioBlob);
 
@@ -1266,30 +1176,36 @@
             return newUnread;
         }
 
+        async function getRecipientPublicKeyForActiveChat() {
+            const chat = chatsData.find(c => c.id === currentChatId);
+            if (!chat) return null;
+            if (chat.isGroup) {
+                // Em grupos, para simplicidade com E2EE ponto a ponto, usamos a chave do próprio criador ou própria caso nulo
+                return getUserPublicKey(chat.creator || currentUser.username);
+            } else {
+                const otherUsername = chat.participants.find(p => p.toLowerCase() !== currentUser.usernameLower);
+                return getUserPublicKey(otherUsername);
+            }
+        }
+
         async function sendMediaMessage(mediaDataUrl, type, placeholderText) {
             if (!currentChatId) return;
-            const activeChat = chatsData.find(c => c.id === currentChatId);
-            const encryptionKey = await getChatDecryptionKey(activeChat);
-            if (!encryptionKey) {
-                showCustomModal("Erro", "Chave E2EE indisponível!");
-                return;
-            }
-
-            const payloadObj = { text: placeholderText, replyTo: activeReply };
-            const encryptedPayload = await encryptMessage(JSON.stringify(payloadObj), encryptionKey);
-            const encryptedMediaPayload = await encryptMessage(mediaDataUrl, encryptionKey);
+            
+            const replyData = activeReply;
             window.cancelReply();
+
+            const recipientPub = await getRecipientPublicKeyForActiveChat();
+            const encryptedPayload = await encryptMessageText(mediaDataUrl, recipientPub);
 
             const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
             const msg = {
                 id: msgId,
                 chatId: currentChatId,
                 sender: currentUser.username,
-                text: "[Protegido por Criptografia]",
+                text: placeholderText,
                 type: type,
-                mediaUrl: null, 
                 encryptedPayload: encryptedPayload,
-                encryptedMediaPayload: encryptedMediaPayload,
+                replyTo: replyData || null,
                 timestamp: new Date().toISOString()
             };
 
@@ -1297,8 +1213,7 @@
 
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), msg);
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                lastMessage: "[Conteúdo Oculto E2EE]",
-                encryptedLastMessage: encryptedPayload,
+                lastMessage: placeholderText,
                 lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 unreadCounts: unreadObj
             });
@@ -1314,30 +1229,25 @@
                 return;
             }
 
-            const activeChat = chatsData.find(c => c.id === currentChatId);
-            const encryptionKey = await getChatDecryptionKey(activeChat);
-            if (!encryptionKey) {
-                showCustomModal("Erro", "Chave E2EE indisponível!");
-                return;
-            }
-
-            const payloadObj = { text: text, replyTo: activeReply };
-            const encryptedPayload = await encryptMessage(JSON.stringify(payloadObj), encryptionKey);
+            const replyData = activeReply;
             window.cancelReply();
 
             input.value = '';
             const charCounter = document.getElementById('char-counter');
             if (charCounter) charCounter.textContent = '0/450';
 
+            const recipientPub = await getRecipientPublicKeyForActiveChat();
+            const encryptedPayload = await encryptMessageText(text, recipientPub);
+
             const msgId = 'msg_' + Math.random().toString(36).substring(2, 12);
             const msg = {
                 id: msgId,
                 chatId: currentChatId,
                 sender: currentUser.username,
-                text: "[Protegido por Criptografia]",
+                text: '🔒 [Mensagem Criptografada]',
                 type: 'text',
-                mediaUrl: null,
                 encryptedPayload: encryptedPayload,
+                replyTo: replyData || null,
                 timestamp: new Date().toISOString()
             };
 
@@ -1345,22 +1255,21 @@
 
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), msg);
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                lastMessage: "[Conteúdo Oculto E2EE]",
-                encryptedLastMessage: encryptedPayload,
+                lastMessage: '🔒 Mensagem criptografada',
                 lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 unreadCounts: unreadObj
             });
         }
 
         const messagesContainer = document.getElementById('messages-container');
-        function renderMessages() {
+        async function renderMessages() {
             messagesContainer.innerHTML = '';
             const now = new Date().getTime();
 
-            messagesData.forEach(msg => {
+            for (const msg of messagesData) {
                 const msgTime = new Date(msg.timestamp).getTime();
                 const diffMs = THIRTY_DAYS_MS - (now - msgTime);
-                if (diffMs <= 0) return;
+                if (diffMs <= 0) continue;
 
                 const remainingSecs = Math.ceil(diffMs / 1000);
                 const remDays = Math.floor(remainingSecs / (3600 * 24));
@@ -1371,26 +1280,29 @@
                 let timeStr = remDays === 0 ? `${remHours}h ${remMins}m ${remSec}s` : `${remDays}d ${remHours}h ${remMins}m ${remSec}s`;
                 const isMe = msg.sender.toLowerCase() === currentUser.username.toLowerCase();
                 
+                const decryptionKeyPub = await getRecipientPublicKeyForActiveChat();
+                const decryptedContent = await decryptMessageText(msg.encryptedPayload || msg.text, decryptionKeyPub);
+
                 const div = document.createElement('div');
                 div.className = `flex flex-col max-w-[75%] mb-2 ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'} relative group`;
                 div.setAttribute('data-msg-id', msg.id);
                 div.setAttribute('data-timestamp', msg.timestamp);
                 
                 let contentHtml = '';
-                if (msg.decryptedType === 'photo' && msg.decryptedMedia) {
-                    contentHtml = `<img src="${msg.decryptedMedia}" class="rounded-lg max-w-xs max-h-60 object-cover mb-1 border border-whatsapp-border cursor-pointer" onclick="window.openImageModal('${msg.decryptedMedia}')">`;
-                } else if (msg.decryptedType === 'audio' && msg.decryptedMedia) {
-                    contentHtml = `<audio controls class="max-w-xs my-1"><source src="${msg.decryptedMedia}" type="audio/webm">Seu navegador não suporta áudio.</audio>`;
+                if (msg.type === 'photo') {
+                    contentHtml = `<img src="${decryptedContent}" class="rounded-lg max-w-xs max-h-60 object-cover mb-1 border border-whatsapp-border cursor-pointer" onclick="window.openImageModal('${decryptedContent}')">`;
+                } else if (msg.type === 'audio') {
+                    contentHtml = `<audio controls class="max-w-xs my-1"><source src="${decryptedContent}" type="audio/webm">Seu navegador não suporta áudio.</audio>`;
                 } else {
-                    contentHtml = `<div class="break-words message-text-content">${escapeHtml(msg.decryptedText || '[Criptografado]')}</div>`;
+                    contentHtml = `<div class="break-words message-text-content">${escapeHtml(decryptedContent)}</div>`;
                 }
 
                 let replyHtml = '';
-                if (msg.decryptedReply) {
+                if (msg.replyTo) {
                     replyHtml = `
-                        <div class="bg-black/20 rounded p-1.5 mb-1 border-l-4 border-whatsapp-green text-[11px] cursor-pointer opacity-80 hover:opacity-100 transition" onclick="document.querySelector('[data-msg-id=\\'${msg.decryptedReply.id}\\']')?.scrollIntoView({behavior:'smooth', block:'center'})">
-                            <span class="font-bold text-whatsapp-green block mb-0.5">${getSenderDisplayName(msg.decryptedReply.sender)}</span>
-                            <p class="truncate text-whatsapp-text/80">${escapeHtml(msg.decryptedReply.text)}</p>
+                        <div class="bg-black/20 rounded p-1.5 mb-1 border-l-4 border-whatsapp-green text-[11px] cursor-pointer opacity-80 hover:opacity-100 transition" onclick="document.querySelector('[data-msg-id=\\'${msg.replyTo.id}\\']')?.scrollIntoView({behavior:'smooth', block:'center'})">
+                            <span class="font-bold text-whatsapp-green block mb-0.5">${getSenderDisplayName(msg.replyTo.sender)}</span>
+                            <p class="truncate text-whatsapp-text/80">${escapeHtml(msg.replyTo.text)}</p>
                         </div>
                     `;
                 }
@@ -1401,16 +1313,15 @@
                         ${replyHtml}
                         ${contentHtml}
                         <div class="flex items-center justify-end gap-2 mt-1 text-[10px] text-whatsapp-subtext">
-                            <i class="fa-solid fa-lock text-[9px] text-whatsapp-green" title="E2EE Ativo"></i>
                             <span title="Expira em 30 dias" class="text-amber-400 font-mono timer-display" data-timestamp="${msg.timestamp}"><i class="fa-solid fa-clock mr-0.5"></i>${timeStr}</span>
-                            <span>${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                            ${isMe && msg.decryptedType === 'text' ? `<button onclick="window.editMessage('${msg.id}')" class="hover:text-whatsapp-green ml-1" title="Editar"><i class="fa-solid fa-pen text-[10px]"></i></button>` : ''}
+                            <span><i class="fa-solid fa-lock text-[9px] text-whatsapp-green" title="E2EE Ativo"></i> ${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            ${isMe && msg.type === 'text' ? `<button onclick="window.editMessage('${msg.id}')" class="hover:text-whatsapp-green ml-1" title="Editar"><i class="fa-solid fa-pen text-[10px]"></i></button>` : ''}
                             ${isMe ? `<button onclick="window.deleteMessage('${msg.id}')" class="hover:text-red-400 ml-1" title="Excluir Permanentemente"><i class="fa-solid fa-trash text-[10px]"></i></button>` : ''}
                         </div>
                     </div>
                 `;
                 messagesContainer.appendChild(div);
-            });
+            }
         }
 
         function updateMessageTimersDOM() {
@@ -1444,11 +1355,9 @@
                 }
             }
             if (updatedChatLastMsg && messagesData.length > 0) {
-                const latest = messagesData[messagesData.length - 1];
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                    lastMessage: "[Conteúdo Oculto E2EE]",
-                    encryptedLastMessage: latest.encryptedPayload,
-                    lastTime: new Date(latest.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    lastMessage: '🔒 Mensagem criptografada',
+                    lastTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }).catch(() => {});
             }
         }
@@ -1456,47 +1365,32 @@
         window.deleteMessage = async (msgId) => {
             await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
             const remaining = messagesData.filter(m => m.id !== msgId);
-            if (remaining.length > 0) {
-                const latest = remaining[remaining.length - 1];
+            if (remaining.length === 0) {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                    lastMessage: "[Conteúdo Oculto E2EE]",
-                    encryptedLastMessage: latest.encryptedPayload,
-                    lastTime: new Date(latest.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }).catch(() => {});
-            } else {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                    lastMessage: '[Limpo]', encryptedLastMessage: null, lastTime: ''
+                    lastMessage: '📭 Vazio', lastTime: ''
                 }).catch(() => {});
             }
         };
 
         window.editMessage = async (msgId) => {
             const msgObj = messagesData.find(m => m.id === msgId);
-            if (!msgObj || msgObj.decryptedType !== 'text') return;
+            if (!msgObj || msgObj.type !== 'text') return;
 
-            showModalForm("Editar Mensagem", [{ id: 'new-text', label: 'Novo texto', value: msgObj.decryptedText }], async (vals) => {
+            showModalForm("Editar Mensagem", [{ id: 'new-text', label: 'Novo texto', value: '' }], async (vals) => {
                 const newText = vals['new-text'].trim();
                 if (!newText || newText.length > 450) {
                     showCustomModal("Erro", "Texto inválido ou maior que 450 caracteres.");
                     return;
                 }
-                const activeChat = chatsData.find(c => c.id === currentChatId);
-                const encryptionKey = await getChatDecryptionKey(activeChat);
-                if (!encryptionKey) {
-                    showCustomModal("Erro", "Chave E2EE indisponível no momento.");
-                    return;
-                }
-
-                const payloadObj = { text: newText, replyTo: msgObj.decryptedReply || null };
-                const encryptedPayload = await encryptMessage(JSON.stringify(payloadObj), encryptionKey);
+                
+                const recipientPub = await getRecipientPublicKeyForActiveChat();
+                const encryptedPayload = await encryptMessageText(newText, recipientPub);
 
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId), {
-                    text: "[Protegido por E2EE (Editado)]",
                     encryptedPayload: encryptedPayload
                 });
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', currentChatId), {
-                    lastMessage: "[Conteúdo Oculto E2EE]",
-                    encryptedLastMessage: encryptedPayload
+                    lastMessage: '🔒 Mensagem criptografada'
                 });
             });
         };
@@ -1514,17 +1408,14 @@
             if (chat.isGroup) {
                 const isCreator = (chat.creator || '').toLowerCase() === currentUser.username.toLowerCase();
                 if (!isCreator) {
-                    showCustomModal("Grupo E2EE Extremo", `Nome: ${chat.decryptedName || chat.name}\nCriador: ${chat.creator}`);
+                    showCustomModal("Grupo", `Nome: ${chat.name}\nCriador: ${chat.creator}`);
                     return;
                 }
-                showModalForm("Alterar Nome do Grupo", [{ id: 'g-name', label: 'Novo Nome', value: chat.decryptedName || chat.name }], async (vals) => {
+                showModalForm("Alterar Nome do Grupo", [{ id: 'g-name', label: 'Novo Nome', value: chat.name }], async (vals) => {
                     const newName = vals['g-name'].trim();
                     if (!newName) return;
-                    const gKey = groupKeysCache[chat.id];
-                    if (!gKey) { showCustomModal("Erro", "Chave do grupo indisponível para E2EE!"); return; }
-                    const encName = await encryptMessage(newName, gKey);
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), { name: "[Grupo E2EE]", encryptedName: encName });
-                    showCustomModal("Sucesso", "Nome atualizado com criptografia E2EE!");
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chat.id), { name: newName });
+                    showCustomModal("Sucesso", "Nome atualizado!");
                 });
             } else {
                 const otherUsername = chat.participants.find(p => p.toLowerCase() !== (currentUser.usernameLower || currentUser.username).toLowerCase());
